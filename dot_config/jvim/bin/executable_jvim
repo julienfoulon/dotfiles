@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+CFG_ROOT="${XDG_CONFIG_HOME:-"$HOME/.config"}"
+export NVIM_APPNAME="${NVIM_APPNAME:-"jvim"}"
+NVIM_CONFIG_DIR="${NVIM_CONFIG_DIR:-"$CFG_ROOT/$NVIM_APPNAME"}"
+INIT_FILE="$NVIM_CONFIG_DIR/init.lua"
+
+# Ensure nvim exists
+if ! command -v nvim >/dev/null 2>&1; then
+  echo "Error: Neovim not found in PATH" >&2
+  exit 127 # command not found
+fi
+
+# Ensure init.lua exists
+if [[ ! -f "$INIT_FILE" ]]; then
+  echo "Error: init.lua not found at $INIT_FILE" >&2
+  exit 2 # missing file
+fi
+
+# Launch Neovim with fixed appname
+exec -a "$NVIM_APPNAME" nvim -u "$INIT_FILE" "$@"
