@@ -1,0 +1,2 @@
+# add local binaries to PATH
+. "$HOME/.cargo/env"

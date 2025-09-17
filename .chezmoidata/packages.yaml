@@ -1,0 +1,14 @@
+packages:
+  linux:
+    arch:
+      pacman:
+        - zsh             # used instead of bash
+        - zsh-completions
+        - zoxide          # better cd
+        - eza             # better ls
+        - fzf             # a fuzzy finder
+        - git             # plugins and dev
+        - neovim          # better vi
+    ubuntu:
+      cargo:
+        - zoxide

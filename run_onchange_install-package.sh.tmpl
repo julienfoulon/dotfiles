@@ -1,0 +1,12 @@
+#!/bin/env bash
+{{- if eq .chezmoi.os "linux" }}
+echo "Chezmoi, install {{ .chezmoi.os }} packages ({{- .chezmoi.osRelease.id -}})"
+{{- if eq .chezmoi.osRelease.id "arch" }}
+sudo pacman --needed -Suy{{ range .packages.linux.arch.pacman }} {{ . | quote }}{{- end }}
+{{- else }}
+echo "unsupported linux variant"
+{{- end }}
+{{- else }}
+echo "unsupported OS"
+exit 1
+{{- end }}
