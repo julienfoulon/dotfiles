@@ -2,14 +2,18 @@ packages:
   linux:
     arch:
       pacman:
-        - zsh             # used instead of bash
+        - zsh               # used instead of bash
         - zsh-completions
-        - zoxide          # better cd
-        - eza             # better ls
-        - fzf             # a fuzzy finder
-        - git             # plugins and dev
-        - neovim          # better vi
-        - kitty           # cool terminal
+        - zoxide            # better cd
+        - eza               # better ls
+        - fzf               # a fuzzy finder
+        - fd                # a better find
+        - bat               # better cat
+        - git               # plugins and dev
+        - openssh           # include ssh-agent and ssh-add
+        - ttf-firacode-nerd # Firacode nerd font
+        - neovim            # better vi
+        - kitty             # cool terminal
     ubuntu:
       cargo:
         - zoxide
