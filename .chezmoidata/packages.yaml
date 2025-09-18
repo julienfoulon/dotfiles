@@ -9,6 +9,7 @@ packages:
         - fzf             # a fuzzy finder
         - git             # plugins and dev
         - neovim          # better vi
+        - kitty           # cool terminal
     ubuntu:
       cargo:
         - zoxide
