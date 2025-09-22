@@ -4,6 +4,7 @@ packages:
       pacman:
         - zsh               # used instead of bash
         - zsh-completions
+        - sudo
         - zoxide            # better cd
         - eza               # better ls
         - fzf               # a fuzzy finder
@@ -14,6 +15,7 @@ packages:
         - ttf-firacode-nerd # Firacode nerd font
         - neovim            # better vi
         - kitty             # cool terminal
+        - zellij            # multiplexer
     ubuntu:
       cargo:
         - zoxide
