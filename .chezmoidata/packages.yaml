@@ -5,17 +5,30 @@ packages:
         - zsh               # used instead of bash
         - zsh-completions
         - sudo
+        - zip
+        - unzip
+        - wget
+        - less              # used by git
         - zoxide            # better cd
         - eza               # better ls
         - fzf               # a fuzzy finder
         - fd                # a better find
         - bat               # better cat
         - git               # plugins and dev
+        - base-devel        # for yay install
         - openssh           # include ssh-agent and ssh-add
         - ttf-firacode-nerd # Firacode nerd font
+        - noto-fonts        # needed for emoji below
+        - noto-fonts-emoji  # Emoji font
         - neovim            # better vi
         - kitty             # cool terminal
         - zellij            # multiplexer
+        - age               # encryption
+        - plymouth
+      yay:
+        - fbterm            # Framebuffer terminal
+        - spotify-player
+        - plymouth-theme-catppuccin-mocha-git
     ubuntu:
       cargo:
         - zoxide

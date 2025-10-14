@@ -1,0 +1,23 @@
+guipackages:
+  linux: 
+    arch:
+      yay:
+        - kitty
+        - hyprland
+        - hypridle
+        - hyprshot
+        - swww
+        - waybar
+        - nm-applet
+        - wl-copy
+        - clipse
+        - ripgrep
+        - wofi
+        - dunst
+        - wlogout
+        - brightnessctl
+        - firefox
+        - firefox-i18n-fr
+    ubuntu:
+      cargo:
+        - zoxide

@@ -3,6 +3,36 @@
 echo "Chezmoi, install {{ .chezmoi.os }} packages ({{- .chezmoi.osRelease.id -}})"
 {{- if eq .chezmoi.osRelease.id "arch" }}
 sudo pacman --needed -Suy{{ range .packages.linux.arch.pacman }} {{ . | quote }}{{- end }}
+
+# install yay if necessary
+if ! command -v yay > /dev/null 2>&1; then
+    YAY_DIR="${YAY_DIR:={{- .chezmoi.homeDir -}}/git/yay}"
+    mkdir -p "$YAY_DIR"
+    pushd "$YAY_DIR"
+    cd ..
+    git clone https://aur.archlinux.org/yay.git
+    cd yay
+    makepkg -si
+    popd
+fi
+
+yay --needed -S {{ range .packages.linux.arch.yay }} {{ . | quote }}{{- end }}
+
+
+{{ if .chezmoi.config.data.home -}}
+yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
+{{- end }}
+
+
+# Post install
+if getcap /usr/bin/fbterm | grep -q 'cap_sys_tty_config'; then
+    echo "fbterm: already configured"
+else
+    sudo setcap cap_sys_tty_config+ep /usr/bin/fbterm
+fi
+
+sudo usermod -a -G video {{ .chezmoi.username -}}
+
 {{- else }}
 echo "unsupported linux variant"
 {{- end }}

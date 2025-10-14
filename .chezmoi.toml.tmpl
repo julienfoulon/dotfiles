@@ -1,2 +1,42 @@
+{{/* boolean feature tags */}}
+{{/* inspired from https://github.com/twpayne/dotfiles/blob/master/home/.chezmoi.toml.tmpl */}}
+{{- $work := false -}}{{/* true if this machine is a work machine */}}
+{{- $home := false -}}{{/* true if this machine is a personnal machine */}}
+{{- $laptop := false -}}{{/* true if this host machine */}}
+
+{{- $osID := .chezmoi.os -}}
+{{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
+{{-   $osID = printf "%s-%s" .chezmoi.os .chezmoi.osRelease.id -}}
+{{- end -}}
+
+{{- if eq .chezmoi.hostname "magneto" -}}
+{{- $work = true -}}
+
+{{- if eq $osID "linux-arch" -}}
+{{- $laptop = true -}}
+{{- end -}}
+
+{{- else -}}
+{{- $home = true -}}
+
+{{- end -}}
+
+encryption = "age"
+
+[secrets.keepassxc]
+database = "~/Documents/sync/password_base.kdbx"
+prompt = true
+
+[age]
+identity = "keepassxc:age-key"
+
 [edit]
   command = "jvim"
+
+[data]
+  work = {{ $work }}
+  home = {{ $home }}
+  laptop = {{ $laptop }}
+  osid = {{ $osID | quote }}
+  user.name = "Julien Foulon"
+  
