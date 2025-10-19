@@ -6,6 +6,9 @@ guipackages:
         - hyprland
         - hypridle
         - hyprshot
+        - hyprcursor
+        - xdg-desktop-portal-hyprland
+        - xdg-desktop-portal-kde
         - swww
         - waybar
         - nm-applet

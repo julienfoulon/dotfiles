@@ -7,6 +7,8 @@ packages:
         - sudo
         - zip
         - unzip
+        - Zlib
+        - bzip2
         - wget
         - less              # used by git
         - zoxide            # better cd
@@ -25,6 +27,7 @@ packages:
         - zellij            # multiplexer
         - age               # encryption
         - plymouth
+        - zsh-completions
       yay:
         - fbterm            # Framebuffer terminal
         - spotify-player
