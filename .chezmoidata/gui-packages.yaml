@@ -21,6 +21,8 @@ guipackages:
         - brightnessctl
         - firefox
         - firefox-i18n-fr
+        # Not really gui, but not useful on terminal only hosts
+        - spotify-player
     ubuntu:
       cargo:
         - zoxide

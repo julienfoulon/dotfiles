@@ -26,11 +26,10 @@ packages:
         - kitty             # cool terminal
         - zellij            # multiplexer
         - age               # encryption
-        - plymouth
+        - plymouth          # graphical boot
         - zsh-completions
       yay:
-        - fbterm            # Framebuffer terminal
-        - spotify-player
+        #- fbterm            # Framebuffer terminal
         - plymouth-theme-catppuccin-mocha-git
     ubuntu:
       cargo:
