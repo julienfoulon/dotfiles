@@ -19,6 +19,12 @@ fi
 yay --needed -S {{ range .packages.linux.arch.yay }} {{ . | quote }}{{- end }}
 
 
+{{ if .chezmoi.config.data.laptop -}}
+sudo pacman --needed -Suy{{ range .laptoppackages.linux.arch.pacman }} {{ . | quote }}{{- end }}
+yay --needed -S {{ range .laptoppackages.linux.arch.yay }} {{ . | quote }}{{- end }}
+{{- end }}
+
+
 {{ if .chezmoi.config.data.home -}}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
 {{- end }}

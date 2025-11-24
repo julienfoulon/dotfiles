@@ -1,0 +1,37 @@
+laptoppackages:
+  linux: 
+    arch:
+      pacman:
+        - btop
+        - chafa
+        - docker
+        - dysk
+        - exfatprogs
+        - ffmpegthumbnailer
+        - figlet
+        - htop
+        - imagemagick
+        - iwd
+        - jq
+        - lazygit
+        - linux-headers
+        - lolcat
+        - man-db
+        - net-tools
+        - nmap
+        - ntfs-3g
+        - openresolv
+        - power-profiles-daemon
+        - python-pip
+        - python-pipx
+        - python-virtualenv
+        - rust
+        - smartmontools
+        - syncthing
+        - tldr
+        - wireguard-tools
+        - wireless_tools
+        - yazi
+      yay:
+        - vial-appimage
+        - zoom

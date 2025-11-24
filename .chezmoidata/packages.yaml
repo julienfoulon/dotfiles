@@ -9,7 +9,10 @@ packages:
         - unzip
         - Zlib
         - bzip2
+        - 7zip
         - wget
+        - xdg-user-dirs
+        - xdg-utils
         - less              # used by git
         - zoxide            # better cd
         - eza               # better ls
@@ -27,7 +30,6 @@ packages:
         - zellij            # multiplexer
         - age               # encryption
         - plymouth          # graphical boot
-        - zsh-completions
       yay:
         #- fbterm            # Framebuffer terminal
         - plymouth-theme-catppuccin-mocha-git

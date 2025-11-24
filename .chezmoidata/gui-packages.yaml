@@ -6,16 +6,21 @@ guipackages:
         - hyprland
         - hypridle
         - hyprshot
+        - hyprlock
+        - hyprpolkitagent
         - hyprcursor
         - xdg-desktop-portal-hyprland
         - xdg-desktop-portal-kde
         - swww
         - waybar
         - nm-applet
+        - network-manager-applet
         - wl-copy
+        - wl-clipboard
         - clipse
         - ripgrep
         - wofi
+        - libnotify
         - dunst
         - wlogout
         - brightnessctl
@@ -23,6 +28,32 @@ guipackages:
         - firefox-i18n-fr
         # Not really gui, but not useful on terminal only hosts
         - spotify-player
+        # printer
+        - cups
+        - cups-browsed
+        - cups-pdf
+        # Scanner
+        - sane-airscan
+        - skanpage
+        - tesseract-data-fra
+
+        - sddm
+        # sound gui
+        - pavucontrol-qt
+        - polkit-kde-agent
+
+        # for waydroid
+        - dkms
+        - python-pyclip
+        - waydroid
+
+        # File reader
+        - dolphin
+        - okular
+        - gwenview
+
+        - keepassxc
+
     ubuntu:
       cargo:
         - zoxide
