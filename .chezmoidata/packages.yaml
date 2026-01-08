@@ -28,5 +28,29 @@ packages:
       yay:
         #- fbterm            # Framebuffer terminal
     ubuntu:
+      apt:
+        - zsh
+        - zsh-common        # includes completions on Ubuntu
+        - sudo
+        - zip
+        - unzip
+        - zlib1g            # zlib runtime
+        - bzip2
+        - 7zip
+        - wget
+        - xdg-user-dirs
+        - xdg-utils
+        - less
+        - zoxide
+        - eza
+        - fzf
+        - fd-find           # binary is fdfind
+        - bat               # binary is batcat
+        - git
+        - build-essential   # Arch base-devel equivalent
+        - openssh-client
+        - neovim
+        - age
       cargo:
         - zoxide
+        - zellij

@@ -18,6 +18,14 @@ fi
 
 yay --needed -S {{ range .packages.linux.arch.yay }} {{ . | quote }}{{- end }}
 
+# Ensure cargo is available on Arch
+if ! command -v cargo > /dev/null 2>&1; then
+    sudo pacman --needed -S rustup
+    rustup toolchain install stable
+    rustup default stable
+    export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
+fi
+
 
 {{ if .chezmoi.config.data.laptop -}}
 sudo pacman --needed -Suy{{ range .laptoppackages.linux.arch.pacman }} {{ . | quote }}{{- end }}
@@ -31,6 +39,32 @@ yay --needed -S {{ range .homelaptoppackages.linux.arch.yay }} {{ . | quote }}{{
 
 {{ if .chezmoi.config.data.laptop -}}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
+{{- end }}
+
+{{- else if eq .chezmoi.osRelease.id "ubuntu" }}
+sudo apt-get update -y
+sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
+
+{{- if .chezmoi.config.data.laptop }}
+sudo apt-get install -y{{ range .laptoppackages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
+{{- end }}
+
+{{- if and .chezmoi.config.data.home .chezmoi.config.data.laptop }}
+sudo apt-get install -y{{ range .homelaptoppackages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
+{{- end }}
+
+{{- if .chezmoi.config.data.laptop }}
+sudo apt-get install -y{{ range .guipackages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
+{{- end }}
+
+{{- if .packages.linux.ubuntu.cargo }}
+if ! command -v cargo > /dev/null 2>&1; then
+    sudo apt-get install -y curl
+    curl https://sh.rustup.rs -sSf | sh -s -- -y
+    export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
+else
+    cargo install{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
+fi
 {{- end }}
 
 
