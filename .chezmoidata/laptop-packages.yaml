@@ -13,6 +13,7 @@ laptoppackages:
         - imagemagick
         - iwd
         - jq
+        - kitty
         - lazygit
         - linux-headers
         - lolcat
@@ -20,8 +21,11 @@ laptoppackages:
         - net-tools
         - nmap
         - ntfs-3g
+        - noto-fonts
+        - noto-fonts-emoji
         - openresolv
         - power-profiles-daemon
+        - plymouth
         - python-pip
         - python-pipx
         - python-virtualenv
@@ -29,8 +33,10 @@ laptoppackages:
         - smartmontools
         - syncthing
         - tldr
+        - ttf-firacode-nerd
         - wireguard-tools
         - wireless_tools
         - yazi
       yay:
+        - plymouth-theme-catppuccin-mocha-git
         - vial-appimage

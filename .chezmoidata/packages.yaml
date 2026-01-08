@@ -22,17 +22,11 @@ packages:
         - git               # plugins and dev
         - base-devel        # for yay install
         - openssh           # include ssh-agent and ssh-add
-        - ttf-firacode-nerd # Firacode nerd font
-        - noto-fonts        # needed for emoji below
-        - noto-fonts-emoji  # Emoji font
         - neovim            # better vi
-        - kitty             # cool terminal
         - zellij            # multiplexer
         - age               # encryption
-        - plymouth          # graphical boot
       yay:
         #- fbterm            # Framebuffer terminal
-        - plymouth-theme-catppuccin-mocha-git
     ubuntu:
       cargo:
         - zoxide
