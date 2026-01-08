@@ -43,6 +43,8 @@ yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }
 
 {{- else if eq .chezmoi.osRelease.id "ubuntu" }}
 sudo apt-get update -y
+sudo add-apt-repository -y universe
+sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
 
 {{- if .chezmoi.config.data.laptop }}
@@ -62,18 +64,10 @@ if ! command -v cargo > /dev/null 2>&1; then
     sudo apt-get install -y curl
     curl https://sh.rustup.rs -sSf | sh -s -- -y
     export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
-else
-    cargo install{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 fi
+cargo install{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 {{- end }}
 
-
-# Post install
-if getcap /usr/bin/fbterm | grep -q 'cap_sys_tty_config'; then
-    echo "fbterm: already configured"
-else
-    sudo setcap cap_sys_tty_config+ep /usr/bin/fbterm
-fi
 
 sudo usermod -a -G video {{ .chezmoi.username -}}
 

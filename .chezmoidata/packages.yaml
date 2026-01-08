@@ -9,8 +9,9 @@ packages:
         - unzip
         - Zlib
         - bzip2
-        - 7zip
+        - p7zip-full
         - wget
+        - software-properties-common
         - xdg-user-dirs
         - xdg-utils
         - less              # used by git
