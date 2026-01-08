@@ -1,0 +1,6 @@
+homelaptoppackages:
+  linux:
+    arch:
+      yay:
+        - waydroid
+        - zoom

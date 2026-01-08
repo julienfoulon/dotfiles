@@ -24,8 +24,12 @@ sudo pacman --needed -Suy{{ range .laptoppackages.linux.arch.pacman }} {{ . | qu
 yay --needed -S {{ range .laptoppackages.linux.arch.yay }} {{ . | quote }}{{- end }}
 {{- end }}
 
+{{ if and .chezmoi.config.data.home .chezmoi.config.data.laptop -}}
+yay --needed -S {{ range .homelaptoppackages.linux.arch.yay }} {{ . | quote }}{{- end }}
+{{- end }}
 
-{{ if .chezmoi.config.data.home -}}
+
+{{ if .chezmoi.config.data.laptop -}}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
 {{- end }}
 

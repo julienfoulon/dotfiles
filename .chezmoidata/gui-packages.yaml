@@ -45,7 +45,6 @@ guipackages:
         # for waydroid
         - dkms
         - python-pyclip
-        - waydroid
 
         # File reader
         - dolphin
