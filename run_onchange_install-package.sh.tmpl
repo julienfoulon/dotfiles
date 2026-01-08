@@ -43,6 +43,7 @@ yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }
 
 {{- else if eq .chezmoi.osRelease.id "ubuntu" }}
 sudo apt-get update -y
+sudo apt-get install -y software-properties-common
 sudo add-apt-repository -y universe
 sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
@@ -65,11 +66,18 @@ if ! command -v cargo > /dev/null 2>&1; then
     curl https://sh.rustup.rs -sSf | sh -s -- -y
     export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
 fi
-cargo install{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
+cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 {{- end }}
 
 
-sudo usermod -a -G video {{ .chezmoi.username -}}
+if command -v zsh > /dev/null 2>&1; then
+    CURRENT_SHELL="$(getent passwd "{{ .chezmoi.username }}" | cut -d: -f7)"
+    ZSH_SHELL="$(command -v zsh)"
+    if [ "$CURRENT_SHELL" != "$ZSH_SHELL" ]; then
+        echo "User shell is not zsh; switching default shell to zsh."
+        sudo chsh -s "$ZSH_SHELL" "{{ .chezmoi.username }}"
+    fi
+fi
 
 {{- else }}
 echo "unsupported linux variant"

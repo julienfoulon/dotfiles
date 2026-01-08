@@ -2,7 +2,9 @@ if ! command -v fzf > /dev/null 2>&1;then
     return
 fi
 
-source <(fzf --zsh)
+if fzf --zsh >/dev/null 2>&1; then
+    source <(fzf --zsh)
+fi
 # ---------
 if command -v fdfind >/dev/null 2>&1;then
     # fd is installed, use it instead of find in fzf
