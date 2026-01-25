@@ -1,5 +1,7 @@
 # add local binaries to PATH
-. "$HOME/.cargo/env"
+if [ -f "$HOME/.cargo/env" ]; then
+  . "$HOME/.cargo/env"
+fi
 # Configured by this ?
 # ignore 2025-09-26
 # curl https://sh.rustup.rs -sSf | sh

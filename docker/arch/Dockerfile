@@ -2,8 +2,8 @@
 FROM archlinux:latest
 
 # Install chezmoi + common dependencies
-RUN pacman -Sy --noconfirm --needed \
-    git curl sudo\
+RUN pacman -Syu --noconfirm --needed \
+    ca-certificates git curl sudo \
     && curl -fsLS get.chezmoi.io | sh -s -- -b /usr/local/bin \
     && pacman -Scc --noconfirm
 

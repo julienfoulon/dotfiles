@@ -11,6 +11,7 @@ guipackages:
         - hyprcursor
         - xdg-desktop-portal-hyprland
         - xdg-desktop-portal-kde
+        - archlinux-xdg-menu
         - swww
         - waybar
         - nm-applet
@@ -24,6 +25,7 @@ guipackages:
         - dunst
         - wlogout
         - brightnessctl
+        - power-profiles-daemon
         - firefox
         - firefox-i18n-fr
         # Not really gui, but not useful on terminal only hosts
@@ -38,10 +40,11 @@ guipackages:
         - tesseract-data-fra
 
         - sddm
+        - catppuccin-sddm-theme-mocha
         # sound gui
         - pavucontrol-qt
         - polkit-kde-agent
-
+        
         # for waydroid
         - dkms
         - python-pyclip
@@ -52,6 +55,9 @@ guipackages:
         - gwenview
 
         - keepassxc
+        
+        #- qt5-wayland
+        #- qt6-wayland
 
     ubuntu:
       cargo:
