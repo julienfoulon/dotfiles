@@ -1,0 +1,371 @@
+@import "macchiato.css";
+
+/* https://docs.gtk.org/gtk3/css-overview.html  */
+/* @define-color workspaces  */
+@define-color background alpha(@base, .5);
+@define-color foreground @text;
+@define-color tooltip-background alpha(@base, .8);
+@define-color tooltip-border alpha(@mauve, .8);
+
+@define-color workspaces alpha(@base, 0.6);
+
+/* workspace text colors */
+@define-color workspace_fg alpha(@foreground, .5);
+@define-color act_wrk_fg @green; /* alpha(@base, 1); */
+@define-color use_wrk_fg @mauve;
+
+@define-color workspace_bg alpha(@base, 0.8);
+@define-color act_wrk_bg @mauve;
+
+/* global font definition */
+* {
+  font-family: FiraCode Nerd Font Propo, Roboto;
+  font-stretch: condensed;
+  font-size: 12px;
+}
+
+tooltip {
+  background: @tooltip-background;
+  color: @text;
+  border-radius: 5px;
+  border-width: 1px;
+  font-size: 18px;
+  border-color: @tooltip-border;
+}
+
+/* Style the whole bar */
+window#waybar {
+  background-color: transparent;
+  /* Not transparent by default*/
+  transition-property: background-color;
+  transition-duration: .5s;
+  color: @text;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background: linear-gradient(180deg, alpha(@base, 0.70), alpha(@base, 0.90), alpha(@base, 0.70));
+  border: 1px solid alpha(@blue, 0.5);
+  border-top: 0;
+  border-radius: 0 0 6px 6px;
+  margin-top: 0;
+  padding: 0 4px;
+}
+
+.modules-left {
+  border-left: 0;
+  border-bottom-left-radius: 0;
+}
+
+.modules-right {
+  border-right: 0;
+  border-bottom-right-radius: 0;
+}
+
+
+/*
+    ┓ ┏┏┓┳┓┓┏┓┏┓┏┓┏┓┏┓┏┓┏┓
+    ┃┃┃┃┃┣┫┃┫ ┗┓┃┃┣┫┃ ┣ ┗┓
+    ┗┻┛┗┛┛┗┛┗┛┗┛┣┛┛┗┗┛┗┛┗┛
+*/
+
+#workspaces * {
+  /* padding: 1px 5px; */
+  padding: 0px;
+  font-size: 8px;
+}
+
+/* ALL workspace buttons (Focused + Unfocused) */
+#workspaces button:hover {
+  border: none;
+}
+
+#workspaces button:hover {
+  color: @base;
+  background: @mauve;
+  border: none;
+  border-radius: 6px;
+  box-shadow: none;
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button:hover label {
+  color: @base;
+}
+
+
+/* Only focused workspace*/
+#workspaces button.active * {
+  color: @act_wrk_fg;
+  font-size: 12px;
+ /* background: @act_wrk_bg; */
+  border: none;
+  /* padding: 1px 2px; */
+  /* margin: 1px 4px; */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Unfocused workspace WITH opened Apps
+   !!! Border style is valid for ALL buttons,
+   Set seperate border style for every button. */
+#workspaces button {
+  color: @workspace_fg;
+  /* background: @workspace_bg; */
+  /* padding: 1px 2px; */
+  /* margin: 1px 4px; */
+  transition: all 0.3s ease-in-out;
+}
+
+#workspaces button:not(.empty):not(.active) {
+  color: @use_wrk_fg;
+  /* padding: 1px 2px; */
+  /* margin: 1px 4px; */
+  font-size: 6px;
+}
+
+
+
+
+/*
+    ┓ ┏┏┓┳┓┓┏┓┏┓┏┓┏┓┏┓┏┓┏┓
+    ┃┃┃┃┃┣┫┃┫ ┗┓┃┃┣┫┃ ┣ ┗┓
+    ┗┻┛┗┛┛┗┛┗┛┗┛┣┛┛┗┗┛┗┛┗┛
+*/
+
+#workspaces {
+}
+
+
+
+
+#mpris {
+  color: @teal;
+}
+
+#mpris.stopped {
+  color: #90b1b1;
+}
+
+#mpris.paused {
+  color: #51a37a;
+}
+
+
+#clock {
+  color: @mauve;
+}
+
+#clock:hover {
+  color: darker(@lavender);
+}
+
+#battery.charging,
+#battery.plugged,
+#battery.not-charging,
+#battery.full {
+  color: @green;
+}
+
+#battery.charging:hover,
+#battery.plugged:hover,
+#battery.not-charging:hover,
+#battery.full:hover {
+  color: darker(@green);
+}
+
+@keyframes blink {
+  to {
+    color: @text;
+  }
+}
+
+/* Using steps() instead of linear as a timing function to limit cpu usage */
+#battery.critical:not(.charging) {
+  color: @red;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: steps(12);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#custom-power-profile {}
+
+#custom-power-profile.performance {
+  color: @red;
+}
+
+#custom-power-profile.performance:hover {
+  color: darker(@red);
+}
+
+#custom-power-profile.balanced {
+  color: @blue;
+}
+#custom-power-profile.balanced:hover {
+  color: darker(@blue);
+}
+
+#custom-power-profile.power-saver {
+  color: @green;
+}
+
+#cpu {
+  color: @teal;
+}
+
+#cpu:hover {
+  color: darker(@teal);
+}
+
+#memory {
+  color: @lavender;
+}
+#memory:hover {
+  color: darker(@lavender);
+}
+
+#disk {
+  color: @maroon;
+}
+
+#disk:hover {
+  color: darker(@maroon);
+}
+
+#backlight {
+  color: @subtext0;
+}
+
+#backlight:hover {
+  color: darker(@subtext0);
+}
+
+#network {
+  color: @blue;
+}
+
+#network:hover {
+  color: darker(@blue);
+}
+
+#network.disconnected {
+  color: @red;
+}
+
+#network:hover.disconnected {
+  color: darker(@red);
+}
+
+#pulseaudio {
+  color: @yellow;
+}
+
+#pulseaudio.muted {
+  color: @overlay0;
+}
+
+#pulseaudio:hover {
+  color: darker(@yellow);
+}
+
+#custom-media {
+  background-color: #66cc99;
+  color: #2a5c45;
+  min-width: 100px;
+}
+#custom-media.custom-spotify {
+  background-color: #66cc99;
+}
+
+#custom-media.custom-vlc {
+  background-color: #ffa000;
+}
+
+#temperature {
+  color: @peach;
+}
+
+#temperature:hover {
+  color: darker(@peach);
+}
+
+#temperature.critical {
+  color: @red;
+}
+
+#tray {}
+
+#tray>.passive {
+  -gtk-icon-effect: dim;
+}
+
+#tray>.needs-attention {
+  -gtk-icon-effect: highlight;
+  background-color: @red;
+}
+
+#idle_inhibitor.activated {
+  color: @red;
+}
+
+#idle_inhibitor:hover {
+  color: darker(@red);
+}
+
+#language {
+  color: @sapphire;
+  min-width: 16px;
+}
+
+#language:hover {
+  color: darker(@sapphire);
+}
+
+#keyboard-state {
+  color: @teal;
+}
+
+#keyboard-state:hover {
+  color: darker(@teal)
+}
+
+#keyboard-state>label.locked {
+  color: @red;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: steps(12);
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+}
+
+#keyboard-state:hover>label.locked {
+  color: darker(@red)
+}
+
+
+#clock,
+#battery,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#custom-media,
+#language,
+#tray,
+#idle_inhibitor,
+#custom-power-profile,
+#keyboard-state,
+#custom-power,
+#mpris,
+#workspaces {
+  padding: 0 5px;
+}
+
+#custom-power {
+  color: @red;
+}
