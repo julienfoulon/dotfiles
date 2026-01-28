@@ -1,0 +1,16 @@
+#!/bin/sh
+
+wallpaper_xdg_pictures_dir() {
+  if [ -z "$XDG_PICTURES_DIR" ] && [ -f "$HOME/.config/user-dirs.dirs" ]; then
+    . "$HOME/.config/user-dirs.dirs"
+  fi
+  printf '%s\n' "${XDG_PICTURES_DIR:-$HOME/Pictures}"
+}
+
+wallpaper_dir() {
+  printf '%s\n' "$(wallpaper_xdg_pictures_dir)/wallpapers"
+}
+
+ensure_wallpaper_dir() {
+  mkdir -p "$(wallpaper_dir)"
+}

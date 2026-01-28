@@ -1,0 +1,80 @@
+#!/bin/sh
+
+hash_file() {
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | awk '{print $1}'
+  else
+    return 1
+  fi
+}
+
+if ! command -v find-image >/dev/null 2>&1; then
+  echo "find-image not found in PATH" >&2
+  exit 1
+fi
+
+if [ -r "$HOME/.local/bin/wallpaper_common" ]; then
+  . "$HOME/.local/bin/wallpaper_common"
+else
+  . "$(dirname "$0")/wallpaper_common"
+fi
+
+WALLPAPER_DIR="$(wallpaper_dir)"
+CACHE="$WALLPAPER_DIR/.hashes"
+
+ensure_wallpaper_dir
+
+src=$(find-image)
+if [ -z "$src" ]; then
+  exit 0
+fi
+
+if [ ! -f "$src" ]; then
+  echo "Not a file: $src" >&2
+  exit 1
+fi
+
+new_hash=$(hash_file "$src") || {
+  echo "sha256 tool not found" >&2
+  exit 1
+}
+
+IFS='
+'
+for file in $(find "$WALLPAPER_DIR" -type f ! -name '.hashes'); do
+  existing_hash=$(hash_file "$file") || continue
+  if [ "$existing_hash" = "$new_hash" ]; then
+    if [ ! -f "$CACHE" ] || ! grep -q "^$existing_hash " "$CACHE"; then
+      printf '%s  %s\n' "$existing_hash" "$file" >> "$CACHE"
+    fi
+    echo "Already saved: $file"
+    exit 0
+  fi
+  if [ ! -f "$CACHE" ] || ! grep -q "^$existing_hash " "$CACHE"; then
+    printf '%s  %s\n' "$existing_hash" "$file" >> "$CACHE"
+  fi
+done
+unset IFS
+
+base=$(basename "$src")
+dest="$WALLPAPER_DIR/$base"
+if [ -e "$dest" ]; then
+  name="${base%.*}"
+  ext="${base##*.}"
+  if [ "$name" = "$ext" ]; then
+    ext=""
+  else
+    ext=".$ext"
+  fi
+  i=1
+  while [ -e "$WALLPAPER_DIR/${name}-$i$ext" ]; do
+    i=$((i + 1))
+  done
+  dest="$WALLPAPER_DIR/${name}-$i$ext"
+fi
+
+cp "$src" "$dest"
+printf '%s  %s\n' "$new_hash" "$dest" >> "$CACHE"
+echo "Saved: $dest"

@@ -1,0 +1,19 @@
+#!/bin/sh
+
+if [ -r "$HOME/.local/bin/wallpaper_common" ]; then
+  . "$HOME/.local/bin/wallpaper_common"
+else
+  . "$(dirname "$0")/wallpaper_common"
+fi
+
+WALLPAPER_DIR="$(wallpaper_dir)"
+
+fd -t f -e png -e jpg -e jpeg -e webp -e avif --exclude "$WALLPAPER_DIR" . . \
+  | sed 's/^/img:/g' \
+  | wofi -i --show dmenu \
+      --location center \
+      --width 90% --height 90% \
+      -Dimage_size=256 \
+      -Dcolumns=5 \
+      -Ddynamic_lines=true \
+  | sed 's/^img://g'

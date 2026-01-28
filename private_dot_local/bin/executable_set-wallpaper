@@ -1,0 +1,43 @@
+#!/bin/sh
+
+if [ -z "$XDG_PICTURES_DIR" ] && [ -f "$HOME/.config/user-dirs.dirs" ]; then
+  . "$HOME/.config/user-dirs.dirs"
+fi
+if [ -r "$HOME/.local/bin/wallpaper_common" ]; then
+  . "$HOME/.local/bin/wallpaper_common"
+else
+  . "$(dirname "$0")/wallpaper_common"
+fi
+
+WALLPAPER_DIR="$(wallpaper_dir)"
+
+if ! command -v swww >/dev/null 2>&1; then
+  echo "swww not found in PATH" >&2
+  exit 1
+fi
+
+if ! command -v find-image >/dev/null 2>&1; then
+  echo "find-image not found in PATH" >&2
+  exit 1
+fi
+
+ensure_wallpaper_dir
+
+img=$(
+  cd "$WALLPAPER_DIR" && find-image
+)
+
+if [ -z "$img" ]; then
+  exit 0
+fi
+
+cursor_pos=$(hyprctl cursorpos 2>/dev/null | grep -E '^[0-9]' || echo "0,0")
+
+swww img \
+  --transition-fps 60 \
+  --transition-type grow \
+  --transition-duration .75 \
+  --transition-bezier 1,0.9,1,0.7 \
+  --invert-y \
+  --transition-pos "$cursor_pos" \
+  "$WALLPAPER_DIR/$img"
