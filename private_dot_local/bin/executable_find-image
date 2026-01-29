@@ -10,10 +10,11 @@ WALLPAPER_DIR="$(wallpaper_dir)"
 
 fd -t f -e png -e jpg -e jpeg -e webp -e avif --exclude "$WALLPAPER_DIR" . . \
   | sed 's/^/img:/g' \
-  | wofi -i --show dmenu \
+  | wofi -i --show dmenu --allow-images \
       --location center \
       --width 90% --height 90% \
+      --columns 5 \
       -Dimage_size=256 \
-      -Dcolumns=5 \
+      -Dcontent_halign=center \
       -Ddynamic_lines=true \
   | sed 's/^img://g'
