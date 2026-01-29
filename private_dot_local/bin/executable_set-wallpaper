@@ -32,12 +32,32 @@ if [ -z "$img" ]; then
 fi
 
 cursor_pos=$(hyprctl cursorpos 2>/dev/null | grep -E '^[0-9]' || echo "0,0")
+cursor_x=${cursor_pos%,*}
+cursor_y=${cursor_pos#*,}
 
-swww img \
+output=""
+if command -v jq >/dev/null 2>&1; then
+  output=$(
+    hyprctl monitors -j 2>/dev/null | jq -r \
+      --argjson x "$cursor_x" \
+      --argjson y "$cursor_y" \
+      '.[] | select(($x >= .x) and ($x < (.x + .width)) and ($y >= .y) and ($y < (.y + .height))) | .name' \
+      | head -n 1
+  )
+fi
+
+set -- swww img \
   --transition-fps 60 \
   --transition-type grow \
   --transition-duration .75 \
   --transition-bezier 1,0.9,1,0.7 \
   --invert-y \
-  --transition-pos "$cursor_pos" \
-  "$WALLPAPER_DIR/$img"
+  --transition-pos "$cursor_pos"
+
+if [ -n "$output" ]; then
+  set -- "$@" -o "$output"
+fi
+
+set -- "$@" "$WALLPAPER_DIR/$img"
+
+"$@"

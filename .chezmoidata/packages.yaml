@@ -20,6 +20,7 @@ packages:
         - fzf               # a fuzzy finder
         - fd                # a better find
         - bat               # better cat
+        - jq                # JSON parsing for scripts
         - git               # plugins and dev
         - base-devel        # for yay install
         - openssh           # include ssh-agent and ssh-add
@@ -48,6 +49,7 @@ packages:
         - fzf
         - fd-find           # binary is fdfind
         - bat               # binary is batcat
+        - jq
         - git
         - build-essential   # Arch base-devel equivalent
         - openssh-client
