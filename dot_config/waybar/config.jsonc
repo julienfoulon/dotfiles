@@ -86,12 +86,13 @@
     "ellipsis": true
   },
   "mpris": {
-    "format": "{status_icon}  {artist} - {album} - {title} ",
+    "format": "{status_icon} {dynamic}",
+    "dynamic-len": 60,
     "player-icons": {
       "default": "▶",
       "spotify": "🎵"
     },
-    "format-paused": "{status_icon} <i>{artist} - {album} - {title} </i>",
+    "format-paused": "{status_icon} <i>{dynamic}</i>",
     "status-icons": {
       "paused": "",
       "playing": ""

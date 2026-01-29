@@ -17,6 +17,17 @@
 - Package lists live in `.chezmoidata/*.yaml` (`packages.yaml`, `laptop-packages.yaml`, `home-laptop-packages.yaml`, `gui-packages.yaml`).
 - `run_onchange_install-package.sh.tmpl` installs them via `pacman`/`yay` on Arch and `apt`/`cargo` on Ubuntu.
 - Laptop and home/laptop package sets are gated by `.chezmoi.config.data.laptop` and `.chezmoi.config.data.home`.
+- Laptop installs GUI packages; VMs do not.
+- Home can add specific packages.
+
+## Hosts & Environments
+- Magneto: work laptop, Arch Linux, two external Dell screens.
+  - Hosts systemd-nspawn environments: `jammy` and `noble` (Ubuntu Jammy/Noble).
+  - Also has an `ubuntu` VM used for builds.
+  - All on lab network `192.168.80.0/24`.
+- Moriarty: personal laptop, Arch Linux, Waydroid.
+  - May be connected to a 4K screen with 2x scaling.
+- Chezmoi configs target these machines and the above environments.
 
 ## Coding Style & Naming Conventions
 - Follow existing patterns in each file type; keep edits minimal and focused.
