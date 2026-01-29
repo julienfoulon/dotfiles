@@ -158,7 +158,7 @@
     "format": "{capacity}% {icon}",
     "format-full": "{icon}",
     "format-charging": "{capacity}% 󰂄",
-    "format-plugged": "{capacity}% ",
+    "format-plugged": "",
     "format-not-charging": "{icon}",
     "format-alt": "{time} {icon}",
     // "format-good": "", // An empty format will hide the module
@@ -175,7 +175,8 @@
     "exec": "~/.config/waybar/power-profile.sh",
     "interval": 5,
     "return-type": "json",
-    "tooltip": true
+    "tooltip": true,
+    "on-click": "~/.config/waybar/power-profile.sh toggle"
   },
   "network": {
     // "interface": "wlp2*", // (Optional) To force the use of this interface
