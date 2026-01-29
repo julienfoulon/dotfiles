@@ -23,7 +23,7 @@ laptoppackages:
         - ntfs-3g
         - noto-fonts
         - noto-fonts-emoji
-        - openresolv
+        - systemd-resolvconf
         - power-profiles-daemon
         - plymouth
         - python-pip
