@@ -5,8 +5,13 @@
 # https://wiki.hypr.land/Configuring/Variables/#input
 input {
     numlock_by_default = true
+    {{- if and .work .laptop }}
+    kb_layout = us, fr
+    kb_variant = intl, azerty
+    {{- else }}
     kb_layout = fr, us
     kb_variant = azerty, intl
+    {{- end }}
     kb_model =
     kb_options = grp:win_space_toggle
     kb_rules =

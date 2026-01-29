@@ -3,6 +3,7 @@
 ## Project Structure & Module Organization
 - `dot_*` and `private_dot_*` are chezmoi templates for home directory files.
 - `dot_config/` contains app configs (e.g., `dot_config/zsh-config.d/`, `dot_config/kitty/`, `dot_config/jvim/`).
+- Hyprland and Waybar configs live under `dot_config/hypr/` and `dot_config/waybar/`.
 - `private_dot_local/bin/` holds local scripts and wrappers (e.g., `symlink_jvim`).
 - `docker/arch/` provides a containerized Arch setup for validation (`Dockerfile`, `test.sh`).
 
