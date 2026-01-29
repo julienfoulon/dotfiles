@@ -60,6 +60,14 @@ sudo add-apt-repository -y universe
 sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
 
+ensure_cargo() {
+    if ! command -v cargo > /dev/null 2>&1; then
+        sudo apt-get install -y curl
+        curl https://sh.rustup.rs -sSf | sh -s -- -y
+        export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
+    fi
+}
+
 NEOVIM_DIR="/opt/nvim-linux-x86_64"
 NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
 if ! command -v curl > /dev/null 2>&1; then
@@ -85,11 +93,7 @@ sudo apt-get install -y{{ range .guipackages.linux.ubuntu.apt }} {{ . | quote }}
 {{- end }}
 
 {{- if .packages.linux.ubuntu.cargo }}
-if ! command -v cargo > /dev/null 2>&1; then
-    sudo apt-get install -y curl
-    curl https://sh.rustup.rs -sSf | sh -s -- -y
-    export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
-fi
+ensure_cargo
 cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 {{- end }}
 

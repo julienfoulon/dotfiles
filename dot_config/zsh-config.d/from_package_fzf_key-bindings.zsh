@@ -1,5 +1,5 @@
-if not command -v fzf > /dev/null 2>&1;then
-    return
+if ! command -v fzf >/dev/null 2>&1; then
+  return
 fi
 #     ____      ____
 #    / __/___  / __/

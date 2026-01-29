@@ -21,6 +21,9 @@ zinit light zsh-users/zsh-syntax-highlighting
 # autocompletions plugin
 zinit light zsh-users/zsh-completions
 
+# init completion after fpath updates, before fzf-tab
+autoload -Uz compinit && compinit
+
 # associate tab with fzf
 zinit light Aloxaf/fzf-tab
 
