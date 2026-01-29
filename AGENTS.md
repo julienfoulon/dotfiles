@@ -43,6 +43,7 @@
 ## Commit & Pull Request Guidelines
 - Commit history uses short, imperative messages (e.g., "Add config for home laptop", "Update nvim configuration").
 - Keep commits focused on one logical change.
+- Propose a commit message based first on the diff and/or staged file changes before asking for confirmation.
 - PRs should include a short description, the affected app(s) or OS, and any manual validation performed.
 - For UI-affecting changes (kitty themes, zsh prompts), include a screenshot or describe the visual change.
 - Before committing, always ask for confirmation of the commit message.
