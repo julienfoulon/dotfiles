@@ -53,7 +53,6 @@ packages:
         - git
         - build-essential   # Arch base-devel equivalent
         - openssh-client
-        - neovim
         - age
       cargo:
         - zoxide

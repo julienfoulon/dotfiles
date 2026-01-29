@@ -60,6 +60,18 @@ sudo add-apt-repository -y universe
 sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
 
+NEOVIM_DIR="/opt/nvim-linux-x86_64"
+NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
+if ! command -v curl > /dev/null 2>&1; then
+    sudo apt-get install -y curl
+fi
+curl -L -o "$NEOVIM_TARBALL" "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+sudo rm -rf "$NEOVIM_DIR"
+sudo tar -C /opt -xzf "$NEOVIM_TARBALL"
+rm -f "$NEOVIM_TARBALL"
+mkdir -p "{{- .chezmoi.homeDir -}}/.local/bin"
+ln -sf "$NEOVIM_DIR/bin/nvim" "{{- .chezmoi.homeDir -}}/.local/bin/nvim"
+
 {{- if .chezmoi.config.data.laptop }}
 sudo apt-get install -y{{ range .laptoppackages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
 {{- end }}
