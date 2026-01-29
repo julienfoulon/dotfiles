@@ -1,0 +1,18 @@
+#!/bin/sh
+
+if ! command -v hyprctl >/dev/null 2>&1; then
+  exit 0
+fi
+
+if command -v jq >/dev/null 2>&1; then
+  info=$(hyprctl activewindow -j 2>/dev/null) || exit 0
+  class=$(printf "%s" "$info" | jq -r '.class // empty')
+  pid=$(printf "%s" "$info" | jq -r '.pid // empty')
+
+  if [ "$class" = "clipse" ] && [ -n "$pid" ] && [ "$pid" != "null" ]; then
+    kill "$pid" 2>/dev/null
+    exit 0
+  fi
+fi
+
+hyprctl dispatch killactive
