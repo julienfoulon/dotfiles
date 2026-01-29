@@ -45,6 +45,7 @@
 - Keep commits focused on one logical change.
 - PRs should include a short description, the affected app(s) or OS, and any manual validation performed.
 - For UI-affecting changes (kitty themes, zsh prompts), include a screenshot or describe the visual change.
+- Before committing, always ask for confirmation of the commit message.
 
 ## Security & Configuration Tips
 - Avoid committing secrets or machine-specific credentials.
