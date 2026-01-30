@@ -1,3 +1,5 @@
 # Exclude repo-only metadata and assets directory from being applied
 AGENTS.md
+README.md
 assets/
+docker/
