@@ -44,8 +44,6 @@ packages:
         - xdg-user-dirs
         - xdg-utils
         - less
-        - zoxide
-        - fzf
         - fd-find           # binary is fdfind
         - bat               # binary is batcat
         - jq

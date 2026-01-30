@@ -59,6 +59,10 @@ sudo apt-get install -y software-properties-common
 sudo add-apt-repository -y universe
 sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
+{{- if .packages.linux.ubuntu.cargo }}
+# Remove any apt-provided duplicates of cargo-managed packages (ignore missing).
+sudo apt-get remove -y --ignore-missing{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
+{{- end }}
 
 ensure_cargo() {
     if ! command -v cargo > /dev/null 2>&1; then
@@ -96,6 +100,15 @@ sudo apt-get install -y{{ range .guipackages.linux.ubuntu.apt }} {{ . | quote }}
 ensure_cargo
 cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 {{- end }}
+
+FZF_DIR="{{- .chezmoi.homeDir -}}/.local/share/fzf"
+if [ -d "$FZF_DIR/.git" ]; then
+    git -C "$FZF_DIR" fetch --depth 1 origin
+    git -C "$FZF_DIR" reset --hard FETCH_HEAD
+else
+    git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
+fi
+"$FZF_DIR/install" --bin
 
 
 if command -v zsh > /dev/null 2>&1; then
