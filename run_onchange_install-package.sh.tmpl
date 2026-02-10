@@ -38,6 +38,19 @@ yay --needed -S {{ range .homelaptoppackages.linux.arch.yay }} {{ . | quote }}{{
 
 {{ if or .chezmoi.config.data.home .chezmoi.config.data.laptop -}}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
+for svc in cups.service avahi-daemon.service cups-browsed.service; do
+    if systemctl is-enabled --quiet "$svc"; then
+        echo "$svc: already enabled"
+    else
+        sudo systemctl enable "$svc"
+    fi
+    if systemctl is-active --quiet "$svc"; then
+        echo "$svc: already active"
+    else
+        sudo systemctl start "$svc"
+    fi
+done
+
 {{ if .chezmoi.config.data.laptop -}}
 SDDM_CONFIG_DIR="/etc/sddm.conf.d"
 sudo install -d -m 755 "$SDDM_CONFIG_DIR"

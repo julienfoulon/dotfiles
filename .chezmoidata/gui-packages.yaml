@@ -34,6 +34,8 @@ guipackages:
         - cups
         - cups-browsed
         - cups-pdf
+        - nss-mdns
+        - system-config-printer
         # Scanner
         - sane-airscan
         - skanpage
