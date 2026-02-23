@@ -18,7 +18,7 @@ guipackages:
         - network-manager-applet
         - wl-copy
         - wl-clipboard
-        - clipse
+        - clipse-wayland-bin
         - ripgrep
         - wofi
         - libnotify
@@ -55,6 +55,13 @@ guipackages:
         - dolphin
         - okular
         - gwenview
+        # Theme/integration for KDE apps outside Plasma session
+        - breeze
+        - breeze-icons
+        - plasma-integration
+        - qqc2-desktop-style
+        # GTK dark theme assets
+        - gnome-themes-extra
 
         - keepassxc
         
