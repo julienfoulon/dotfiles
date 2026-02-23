@@ -60,6 +60,7 @@ guipackages:
         - breeze-icons
         - plasma-integration
         - qqc2-desktop-style
+        - breeze-gtk
         # GTK dark theme assets
         - gnome-themes-extra
 
