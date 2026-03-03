@@ -8,11 +8,19 @@ if [[ -o login ]]; then
         os_version="${VERSION_ID:-unknown}"
     fi
 
-    host_name="$(command hostname)"
-    kernel_version="$(command uname -r)"
+    host_name="${HOST%%.*}"
+    if [[ -z "$host_name" && -r /etc/hostname ]]; then
+        IFS= read -r host_name < /etc/hostname
+    fi
+    host_name="${host_name:-unknown}"
+
+    kernel_version="unknown"
+    if (( $+commands[uname] )); then
+        kernel_version="$(uname -r)"
+    fi
     container_tag=""
     if [[ -r /run/systemd/container ]]; then
-        container_type="$(command cat /run/systemd/container)"
+        IFS= read -r container_type < /run/systemd/container
         container_tag=" %F{blue}(container:${container_type})%f"
     fi
 
