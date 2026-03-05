@@ -12,7 +12,6 @@ laptoppackages:
         - htop
         - imagemagick
         - iwd
-        - jq
         - kitty
         - lazygit
         - linux-headers
@@ -29,7 +28,6 @@ laptoppackages:
         - python-pip
         - python-pipx
         - python-virtualenv
-        - rust
         - smartmontools
         - syncthing
         - tldr

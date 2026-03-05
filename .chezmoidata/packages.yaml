@@ -7,11 +7,10 @@ packages:
         - sudo
         - zip
         - unzip
-        - Zlib
+        - zlib
         - bzip2
-        - p7zip-full
+        - p7zip
         - wget
-        - software-properties-common
         - xdg-user-dirs
         - xdg-utils
         - less              # used by git
@@ -27,6 +26,7 @@ packages:
         - neovim            # better vi
         - zellij            # multiplexer
         - age               # encryption
+        - ripgrep           # better grep
       yay:
         #- fbterm            # Framebuffer terminal
     ubuntu:
@@ -55,3 +55,5 @@ packages:
         - eza
         - zoxide
         - zellij
+        - ripgrep
+        - cargo-update

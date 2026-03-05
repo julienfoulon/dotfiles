@@ -6,14 +6,10 @@ sudo pacman --needed -Suy{{ range .packages.linux.arch.pacman }} {{ . | quote }}
 
 # install yay if necessary
 if ! command -v yay > /dev/null 2>&1; then
-    YAY_DIR="${YAY_DIR:={{- .chezmoi.homeDir -}}/git/yay}"
-    mkdir -p "$YAY_DIR"
-    pushd "$YAY_DIR"
-    cd ..
-    git clone https://aur.archlinux.org/yay.git
-    cd yay
-    makepkg -si
-    popd
+    YAY_DIR="$(mktemp -d)"
+    git clone https://aur.archlinux.org/yay.git "$YAY_DIR"
+    (cd "$YAY_DIR" && makepkg -si)
+    rm -rf "$YAY_DIR"
 fi
 
 yay --needed -S {{ range .packages.linux.arch.yay }} {{ . | quote }}{{- end }}
@@ -36,7 +32,7 @@ yay --needed -S {{ range .laptoppackages.linux.arch.yay }} {{ . | quote }}{{- en
 yay --needed -S {{ range .homelaptoppackages.linux.arch.yay }} {{ . | quote }}{{- end }}
 {{- end }}
 
-{{ if or .chezmoi.config.data.home .chezmoi.config.data.laptop -}}
+{{ if .chezmoi.config.data.laptop -}}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
 for svc in cups.service avahi-daemon.service cups-browsed.service; do
     if systemctl is-enabled --quiet "$svc"; then
@@ -85,17 +81,19 @@ ensure_cargo() {
     fi
 }
 
-NEOVIM_DIR="/opt/nvim-linux-x86_64"
-NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
-if ! command -v curl > /dev/null 2>&1; then
-    sudo apt-get install -y curl
+if ! command -v nvim > /dev/null 2>&1; then
+    NEOVIM_DIR="/opt/nvim-linux-x86_64"
+    NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
+    if ! command -v curl > /dev/null 2>&1; then
+        sudo apt-get install -y curl
+    fi
+    curl -L -o "$NEOVIM_TARBALL" "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+    sudo rm -rf "$NEOVIM_DIR"
+    sudo tar -C /opt -xzf "$NEOVIM_TARBALL"
+    rm -f "$NEOVIM_TARBALL"
+    mkdir -p "{{- .chezmoi.homeDir -}}/.local/bin"
+    ln -sf "$NEOVIM_DIR/bin/nvim" "{{- .chezmoi.homeDir -}}/.local/bin/nvim"
 fi
-curl -L -o "$NEOVIM_TARBALL" "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
-sudo rm -rf "$NEOVIM_DIR"
-sudo tar -C /opt -xzf "$NEOVIM_TARBALL"
-rm -f "$NEOVIM_TARBALL"
-mkdir -p "{{- .chezmoi.homeDir -}}/.local/bin"
-ln -sf "$NEOVIM_DIR/bin/nvim" "{{- .chezmoi.homeDir -}}/.local/bin/nvim"
 
 {{- if .chezmoi.config.data.laptop }}
 sudo apt-get install -y{{ range .laptoppackages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
@@ -115,15 +113,12 @@ cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{
 {{- end }}
 
 FZF_DIR="{{- .chezmoi.homeDir -}}/.local/share/fzf"
-if [ -d "$FZF_DIR/.git" ]; then
-    git -C "$FZF_DIR" fetch --depth 1 origin
-    git -C "$FZF_DIR" reset --hard FETCH_HEAD
-else
+if [ ! -d "$FZF_DIR/.git" ]; then
     git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
+    "$FZF_DIR/install" --bin
+    ln -sf "$FZF_DIR/bin/fzf" "{{- .chezmoi.homeDir -}}/.local/bin/fzf"
+    ln -sf "$FZF_DIR/bin/fzf-tmux" "{{- .chezmoi.homeDir -}}/.local/bin/fzf-tmux"
 fi
-"$FZF_DIR/install" --bin
-ln -sf "$FZF_DIR/bin/fzf" "{{- .chezmoi.homeDir -}}/.local/bin/fzf"
-ln -sf "$FZF_DIR/bin/fzf-tmux" "{{- .chezmoi.homeDir -}}/.local/bin/fzf-tmux"
 
 
 if command -v zsh > /dev/null 2>&1; then

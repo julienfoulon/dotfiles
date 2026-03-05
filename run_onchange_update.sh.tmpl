@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+# update date: 2026-03-05
+{{- if eq .chezmoi.os "linux" }}
+echo "Chezmoi, update packages ({{- .chezmoi.osRelease.id -}})"
+
+confirm() {
+    local prompt="$1"
+    read -r -p "$prompt [Y/n] " response
+    case "$response" in
+        [nN]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+{{- if eq .chezmoi.osRelease.id "arch" }}
+echo "Pending system updates:"
+if command -v yay > /dev/null 2>&1; then
+    yay -Qu
+    if confirm "Update system?"; then
+        yay
+    fi
+else
+    sudo pacman -Qu
+    if confirm "Update system?"; then
+        sudo pacman -Syu
+    fi
+fi
+
+{{- else if eq .chezmoi.osRelease.id "ubuntu" }}
+sudo apt-get update -y
+echo "Pending system updates:"
+apt list --upgradable 2>/dev/null | grep -v "^Listing"
+if confirm "Update system?"; then
+    sudo apt-get upgrade -y
+fi
+
+if command -v cargo-install-update > /dev/null 2>&1; then
+    if confirm "Update cargo packages?"; then
+        cargo install-update -a
+    fi
+fi
+
+FZF_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fzf"
+if [ -d "$FZF_DIR/.git" ]; then
+    if confirm "Update fzf?"; then
+        git -C "$FZF_DIR" fetch --depth 1 origin
+        git -C "$FZF_DIR" reset --hard FETCH_HEAD
+        "$FZF_DIR/install" --bin
+    fi
+fi
+
+if command -v nvim > /dev/null 2>&1; then
+    if confirm "Update neovim?"; then
+        NEOVIM_DIR="/opt/nvim-linux-x86_64"
+        NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
+        curl -L -o "$NEOVIM_TARBALL" "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+        sudo rm -rf "$NEOVIM_DIR"
+        sudo tar -C /opt -xzf "$NEOVIM_TARBALL"
+        rm -f "$NEOVIM_TARBALL"
+    fi
+fi
+
+{{- else }}
+echo "unsupported linux variant"
+{{- end }}
+
+if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git/zinit.zsh" ]; then
+    if confirm "Update zinit and plugins?"; then
+        zsh -ic "zinit self-update; zinit update --all"
+    fi
+fi
+
+{{- else }}
+echo "unsupported OS"
+exit 1
+{{- end }}

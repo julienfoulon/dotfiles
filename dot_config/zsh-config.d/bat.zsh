@@ -1,17 +1,14 @@
-# Get the command name, bat or batcat
-if command -v bat > /dev/null 2>&1;then
-  BAT=bat
-else
-  BAT=batcat # debian / ubuntu
+if command -v bat >/dev/null 2>&1; then
+    _bat='bat'
+elif command -v batcat >/dev/null 2>&1; then
+    _bat='batcat'
 fi
 
-# if the command is there, configure
-if command -v $BAT >/dev/null 2>&1; then
-  alias cat=$BAT
-  # use bat as the man pager
-  export MANPAGER="sh -c 'col -bx | $BAT -l man -p'"
-  export MANROFFOPT="-c"
-  # use bat for -h and --help
-  alias -g -- -h="-h 2>&1 | $BAT --language=help --style=plain"
-  alias -g -- --help="--help 2>&1 | $BAT --language=help --style=plain"
+if [[ -n "$_bat" ]]; then
+    alias cat="$_bat"
+    export MANPAGER="sh -c 'col -bx | $_bat -l man -p'"
+    export MANROFFOPT="-c"
+    alias -g -- -h="-h 2>&1 | $_bat --language=help --style=plain"
+    alias -g -- --help="--help 2>&1 | $_bat --language=help --style=plain"
+    unset _bat
 fi
