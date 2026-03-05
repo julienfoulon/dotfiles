@@ -122,6 +122,8 @@ else
     git clone --depth 1 https://github.com/junegunn/fzf.git "$FZF_DIR"
 fi
 "$FZF_DIR/install" --bin
+ln -sf "$FZF_DIR/bin/fzf" "{{- .chezmoi.homeDir -}}/.local/bin/fzf"
+ln -sf "$FZF_DIR/bin/fzf-tmux" "{{- .chezmoi.homeDir -}}/.local/bin/fzf-tmux"
 
 
 if command -v zsh > /dev/null 2>&1; then
