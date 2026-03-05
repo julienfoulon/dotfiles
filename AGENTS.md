@@ -27,6 +27,7 @@
   - All on lab network `192.168.80.0/24`.
 - Moriarty: personal laptop, Arch Linux, Waydroid.
   - May be connected to a 4K screen with 2x scaling.
+- nspawn/Ubuntu dev envs (e.g. `jammy`, `noble`): non-laptop Ubuntu hosts, receive the base Ubuntu package set only (no GUI, no laptop packages).
 - Chezmoi configs target these machines and the above environments.
 
 ## Coding Style & Naming Conventions
