@@ -37,3 +37,4 @@ Package lists live in `.chezmoidata/*.yaml` (`packages.yaml`, `laptop-packages.y
 - Short, imperative messages focused on one logical change
 - Always confirm the commit message before committing
 - For UI-affecting changes, describe or screenshot the visual change
+- Never force push
