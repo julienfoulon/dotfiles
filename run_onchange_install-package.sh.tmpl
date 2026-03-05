@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 {{- if eq .chezmoi.os "linux" }}
 echo "Chezmoi, install {{ .chezmoi.os }} packages ({{- .chezmoi.osRelease.id -}})"
 {{- if eq .chezmoi.osRelease.id "arch" }}
@@ -120,6 +120,16 @@ if [ ! -d "$FZF_DIR/.git" ]; then
     ln -sf "$FZF_DIR/bin/fzf-tmux" "{{- .chezmoi.homeDir -}}/.local/bin/fzf-tmux"
 fi
 
+
+if ! command -v lazydocker > /dev/null 2>&1; then
+    LD_VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+        | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+    LD_TARBALL="/tmp/lazydocker.tar.gz"
+    curl -L -o "$LD_TARBALL" \
+        "https://github.com/jesseduffield/lazydocker/releases/download/v${LD_VERSION}/lazydocker_${LD_VERSION}_Linux_x86_64.tar.gz"
+    tar -xzf "$LD_TARBALL" -C "{{- .chezmoi.homeDir -}}/.local/bin" lazydocker
+    rm -f "$LD_TARBALL"
+fi
 
 if command -v zsh > /dev/null 2>&1; then
     CURRENT_SHELL="$(getent passwd "{{ .chezmoi.username }}" | cut -d: -f7)"

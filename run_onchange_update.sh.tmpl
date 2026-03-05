@@ -49,6 +49,18 @@ if [ -d "$FZF_DIR/.git" ]; then
     fi
 fi
 
+if command -v lazydocker > /dev/null 2>&1; then
+    if confirm "Update lazydocker?"; then
+        LD_VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+            | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+        LD_TARBALL="/tmp/lazydocker.tar.gz"
+        curl -L -o "$LD_TARBALL" \
+            "https://github.com/jesseduffield/lazydocker/releases/download/v${LD_VERSION}/lazydocker_${LD_VERSION}_Linux_x86_64.tar.gz"
+        tar -xzf "$LD_TARBALL" -C "$HOME/.local/bin" lazydocker
+        rm -f "$LD_TARBALL"
+    fi
+fi
+
 if command -v nvim > /dev/null 2>&1; then
     if confirm "Update neovim?"; then
         NEOVIM_DIR="/opt/nvim-linux-x86_64"
