@@ -82,6 +82,13 @@ if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git/zinit.zsh" ]; then
     fi
 fi
 
+if command -v jvim > /dev/null 2>&1; then
+    if confirm "Update jvim plugins?"; then
+        NVIM_APPNAME=jvim jvim --headless "+Lazy! update" +qa
+        NVIM_APPNAME=jvim jvim --headless "+MasonToolsUpdateSync" +qa
+    fi
+fi
+
 {{- else }}
 echo "unsupported OS"
 exit 1
