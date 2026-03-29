@@ -12,7 +12,7 @@ guipackages:
         - xdg-desktop-portal-hyprland
         - xdg-desktop-portal-kde
         - archlinux-xdg-menu
-        - swww
+        - awww
         - waybar
         - nm-applet
         - network-manager-applet
