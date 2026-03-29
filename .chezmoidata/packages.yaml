@@ -21,6 +21,7 @@ packages:
         - bat               # better cat
         - jq                # JSON parsing for scripts
         - git               # plugins and dev
+        - jujutsu           # jj VCS
         - base-devel        # for yay install
         - openssh           # include ssh-agent and ssh-add
         - neovim            # better vi
@@ -57,3 +58,4 @@ packages:
         - zellij
         - ripgrep
         - cargo-update
+        - jj-cli            # jj VCS
