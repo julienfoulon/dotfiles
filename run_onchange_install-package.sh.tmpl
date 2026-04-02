@@ -60,6 +60,9 @@ SDDM_CONFIG_DIR="/etc/sddm.conf.d"
 sudo install -d -m 755 "$SDDM_CONFIG_DIR"
 sudo install -m 644 "{{ .chezmoi.sourceDir }}/assets/sddm/10-wayland.conf" "$SDDM_CONFIG_DIR/10-wayland.conf"
 sudo install -m 644 "{{ .chezmoi.sourceDir }}/assets/sddm/20-theme.conf" "$SDDM_CONFIG_DIR/20-theme.conf"
+sudo install -m 644 "{{ .chezmoi.sourceDir }}/assets/sddm/30-compositor.conf" "$SDDM_CONFIG_DIR/30-compositor.conf"
+sudo install -d -m 755 /usr/share/hypr/sddm
+sudo install -m 644 "{{ .chezmoi.sourceDir }}/assets/sddm/hyprland.conf" /usr/share/hypr/sddm/hyprland.conf
 SDDM_THEME_SOURCE_DIR="{{ .chezmoi.sourceDir }}/assets/sddm/laiton-sddm"
 SDDM_THEME_DIR="/usr/share/sddm/themes/laiton-sddm"
 if [ -d "$SDDM_THEME_SOURCE_DIR" ]; then

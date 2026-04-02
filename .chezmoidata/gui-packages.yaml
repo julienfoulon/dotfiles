@@ -43,6 +43,7 @@ guipackages:
 
         - sddm
         - weston
+        - layer-shell-qt
         # sound gui
         - pavucontrol-qt
         - polkit-kde-agent

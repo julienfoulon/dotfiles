@@ -1,4 +1,4 @@
-["assets/sddm/laiton-sddm"]
+[".local/share/chezmoi/assets/sddm/laiton-sddm"]
 type = "git-repo"
 url = "https://github.com/julienfoulon/laiton-sddm.git"
 refreshPeriod = "168h"
