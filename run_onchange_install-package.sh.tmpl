@@ -68,7 +68,13 @@ SDDM_THEME_DIR="/usr/share/sddm/themes/laiton-sddm"
 if [ -d "$SDDM_THEME_SOURCE_DIR" ]; then
     sudo rm -rf "$SDDM_THEME_DIR"
     sudo install -d -m 755 "$SDDM_THEME_DIR"
-    sudo cp -r "$SDDM_THEME_SOURCE_DIR"/. "$SDDM_THEME_DIR"/
+    sudo install -m 644 "$SDDM_THEME_SOURCE_DIR/Main.qml" "$SDDM_THEME_DIR/Main.qml"
+    sudo install -m 644 "$SDDM_THEME_SOURCE_DIR/metadata.desktop" "$SDDM_THEME_DIR/metadata.desktop"
+    sudo install -m 644 "$SDDM_THEME_SOURCE_DIR/theme.conf" "$SDDM_THEME_DIR/theme.conf"
+    sudo install -d -m 755 "$SDDM_THEME_DIR/assets"
+    sudo cp -r "$SDDM_THEME_SOURCE_DIR/assets"/. "$SDDM_THEME_DIR/assets"/
+    sudo install -d -m 755 "$SDDM_THEME_DIR/components"
+    sudo cp -r "$SDDM_THEME_SOURCE_DIR/components"/. "$SDDM_THEME_DIR/components"/
 fi
 if yay -Qq sddm >/dev/null 2>&1; then
     if systemctl is-enabled --quiet sddm.service; then
