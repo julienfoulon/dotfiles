@@ -30,6 +30,11 @@
 - nspawn/Ubuntu dev envs (e.g. `jammy`, `noble`): non-laptop Ubuntu hosts, receive the base Ubuntu package set only (no GUI, no laptop packages).
 - Chezmoi configs target these machines and the above environments.
 
+## Hyprland Notes
+- `dot_config/hypr/hyprland/autostart.conf` intentionally starts both `wl-copy` and `clipse -listen`.
+- On this setup, `wl-copy` is required for the Wayland clipboard flow used by `clipse`; do not remove it as dead weight without re-verifying clipboard behavior.
+- `awww-daemon` restores the previous wallpaper automatically, so it is not just a daemon bootstrap with no visible effect.
+
 ## Coding Style & Naming Conventions
 - Follow existing patterns in each file type; keep edits minimal and focused.
 - Lua config in `dot_config/jvim/` uses 2-space indentation and inline tables.

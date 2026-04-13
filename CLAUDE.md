@@ -22,6 +22,12 @@ Configured via `.chezmoi.toml.tmpl` using hostname detection:
 
 Template data variables: `work`, `home`, `laptop`, `osid`.
 
+## Hyprland Notes
+
+- `dot_config/hypr/hyprland/autostart.conf` intentionally starts both `wl-copy` and `clipse -listen`.
+- On this setup, `wl-copy` is part of the Wayland clipboard path used by `clipse`; do not remove it unless clipboard behavior has been re-validated.
+- `awww-daemon` restores the previous wallpaper automatically on startup, so it has user-visible effect immediately after login.
+
 ## Package Management
 
 Package lists live in `.chezmoidata/*.yaml` (`packages.yaml`, `laptop-packages.yaml`, `home-laptop-packages.yaml`, `gui-packages.yaml`). `run_onchange_install-package.sh.tmpl` installs them via `pacman`/`yay` on Arch and `apt`/`cargo` on Ubuntu. Laptop-only and home-only packages are gated by the corresponding data flags. Only laptops install GUI packages.
