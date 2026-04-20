@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+confirm() {
+    local prompt="$1"
+    read -r -p "$prompt [Y/n] " response
+    case "$response" in
+        [nN]*) return 1 ;;
+        *) return 0 ;;
+    esac
+}
+
+OS_ID=$(. /etc/os-release 2>/dev/null && echo "$ID" || echo "unknown")
+
+case "$OS_ID" in
+    arch)
+        echo "Pending system updates:"
+        if command -v yay > /dev/null 2>&1; then
+            yay -Qu
+            confirm "Update system?" && yay
+        else
+            sudo pacman -Qu
+            confirm "Update system?" && sudo pacman -Syu
+        fi
+        ;;
+    ubuntu)
+        sudo apt-get update -y
+        echo "Pending system updates:"
+        apt list --upgradable 2>/dev/null | grep -v "^Listing"
+        confirm "Update system?" && sudo apt-get upgrade -y
+
+        if command -v cargo-install-update > /dev/null 2>&1; then
+            confirm "Update cargo packages?" && cargo install-update -a
+        fi
+
+        FZF_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/fzf"
+        if [ -d "$FZF_DIR/.git" ]; then
+            if confirm "Update fzf?"; then
+                git -C "$FZF_DIR" fetch --depth 1 origin
+                git -C "$FZF_DIR" reset --hard FETCH_HEAD
+                "$FZF_DIR/install" --bin
+            fi
+        fi
+
+        if command -v lazydocker > /dev/null 2>&1; then
+            if confirm "Update lazydocker?"; then
+                LD_VERSION=$(curl -s https://api.github.com/repos/jesseduffield/lazydocker/releases/latest \
+                    | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+                LD_TARBALL="/tmp/lazydocker.tar.gz"
+                curl -L -o "$LD_TARBALL" \
+                    "https://github.com/jesseduffield/lazydocker/releases/download/v${LD_VERSION}/lazydocker_${LD_VERSION}_Linux_x86_64.tar.gz"
+                tar -xzf "$LD_TARBALL" -C "$HOME/.local/bin" lazydocker
+                rm -f "$LD_TARBALL"
+            fi
+        fi
+
+        if command -v nvim > /dev/null 2>&1; then
+            if confirm "Update neovim?"; then
+                NEOVIM_TARBALL="/tmp/nvim-linux-x86_64.tar.gz"
+                curl -L -o "$NEOVIM_TARBALL" "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-x86_64.tar.gz"
+                sudo rm -rf /opt/nvim-linux-x86_64
+                sudo tar -C /opt -xzf "$NEOVIM_TARBALL"
+                rm -f "$NEOVIM_TARBALL"
+            fi
+        fi
+        ;;
+    *)
+        echo "Unsupported OS: $OS_ID"
+        exit 1
+        ;;
+esac
+
+if [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git/zinit.zsh" ]; then
+    confirm "Update zinit and plugins?" && zsh -ic "zinit self-update; zinit update --all"
+fi
+
+if command -v jvim > /dev/null 2>&1; then
+    if confirm "Update jvim plugins?"; then
+        NVIM_APPNAME=jvim jvim --headless "+Lazy! update" +qa
+        NVIM_APPNAME=jvim jvim --headless "+MasonToolsUpdateSync" +qa
+    fi
+fi
