@@ -3,7 +3,11 @@
 # See https://wiki.hypr.land/Configuring/Monitors/
 
 # Laptop panel
+{{- if and .work .laptop }}
 monitor = eDP-1, 1920x1200@60, 0x0, 1
+{{- else }}
+monitor = eDP-1, highres, auto, 1
+{{- end }}
 
 # Lid switch behavior (for laptops)
 
@@ -17,4 +21,3 @@ monitor = desc:DENON Ltd. DENON-AVRHD 0x01010101, highres, auto, 2
 
 # Fallback for any other monitor
 monitor = , preferred, auto, auto
-
