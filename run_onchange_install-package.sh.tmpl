@@ -103,6 +103,11 @@ ensure_cargo() {
         curl https://sh.rustup.rs -sSf | sh -s -- -y
         export PATH="{{- .chezmoi.homeDir -}}/.cargo/bin:$PATH"
     fi
+    # Keep the stable toolchain current so cargo crates requiring a recent
+    # rustc (e.g. jj-cli) can build.
+    if command -v rustup > /dev/null 2>&1; then
+        rustup update stable
+    fi
 }
 
 if ! command -v nvim > /dev/null 2>&1; then
