@@ -19,7 +19,7 @@ hl.on("hyprland.start", function()
             hl.monitor({ output = "eDP-1", disabled = true })
         end
     end
-    -- Launch work apps when docked (WORK_LEFT monitor = workspace 4)
+    -- Launch work apps when docked (work_left monitor = workspace 4)
     if vars.is_work_laptop and hl.get_monitor(vars.work_left) then
         local chrome      = "/opt/google/chrome/google-chrome --profile-directory=Default"
         local teams_pwa   = chrome .. " --app-id=cifhbcnohmdccbgoicgdjpfamggdegmo"
