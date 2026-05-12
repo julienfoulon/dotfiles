@@ -17,6 +17,7 @@ hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd(lid_open_cmd),                 
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("close-active"))
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("wlogout --column-spacing 12 --row-spacing 12"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill wofi || " .. menu))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(terminal .. " --class clipse -e clipse"))
