@@ -19,12 +19,12 @@ if vars.is_work_laptop then
     hl.workspace_rule({ workspace = 1, monitor = "eDP-1", default = true })
     hl.workspace_rule({ workspace = 2, monitor = "eDP-1" })
     hl.workspace_rule({ workspace = 3, monitor = "eDP-1" })
-    hl.workspace_rule({ workspace = 4, monitor = "desc:Dell Inc. DELL P2217H 0G2TG68C266T",  persistent = true, default = true })
-    hl.workspace_rule({ workspace = 5, monitor = "desc:Dell Inc. DELL P2217H 0G2TG68C266T",  persistent = true })
-    hl.workspace_rule({ workspace = 6, monitor = "desc:Dell Inc. DELL P2217H 0G2TG68C266T",  persistent = true })
-    hl.workspace_rule({ workspace = 7, monitor = "desc:Dell Inc. DELL UZ2315H 0J4PM66NA36S", persistent = true, default = true })
-    hl.workspace_rule({ workspace = 8, monitor = "desc:Dell Inc. DELL UZ2315H 0J4PM66NA36S", persistent = true })
-    hl.workspace_rule({ workspace = 9, monitor = "desc:Dell Inc. DELL UZ2315H 0J4PM66NA36S", persistent = true })
+    hl.workspace_rule({ workspace = 4, monitor = vars.work_left,  persistent = true, default = true })
+    hl.workspace_rule({ workspace = 5, monitor = vars.work_left,  persistent = true })
+    hl.workspace_rule({ workspace = 6, monitor = vars.work_left,  persistent = true })
+    hl.workspace_rule({ workspace = 7, monitor = vars.work_right, persistent = true, default = true })
+    hl.workspace_rule({ workspace = 8, monitor = vars.work_right, persistent = true })
+    hl.workspace_rule({ workspace = 9, monitor = vars.work_right, persistent = true })
 else
     hl.workspace_rule({ workspace = 1, monitor = "eDP-1", persistent = true, default = true })
     for i = 2, 5 do
