@@ -12,6 +12,13 @@ hl.window_rule({
     no_focus = true,
 })
 
+hl.layer_rule({
+    name       = "wlogout-blur",
+    match      = { namespace = "logout_dialog" },
+    blur       = true,
+    dim_around = true,
+})
+
 hl.window_rule({
     name    = "float-clipse",
     match   = { class = "clipse" },
