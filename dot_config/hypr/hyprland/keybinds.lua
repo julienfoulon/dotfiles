@@ -5,13 +5,42 @@ local fileManager = "dolphin"
 local menu        = "wofi --show drun --show-icons --allow-images"
 local mainMod     = "SUPER"
 
--- Lid switch (hyprctl keyword is disabled for Lua configs; use eval)
-local lid_open_cmd = vars.is_work_laptop
-    and [[hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "1920x1200@60", position = "0x0", scale = 1 })']]
-    or  [[hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "highres", position = "auto", scale = 1 })']]
+local function laptop_panel_config()
+    if vars.is_work_laptop then
+        return { output = "eDP-1", disabled = false, mode = "1920x1200@60", position = "0x0", scale = 1 }
+    end
 
-hl.bind("switch:on:Lid Switch",  hl.dsp.exec_cmd([[hyprctl eval 'hl.monitor({ output = "eDP-1", disabled = true })']]),  { locked = true })
-hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd(lid_open_cmd),                                                           { locked = true })
+    return { output = "eDP-1", disabled = false, mode = "highres", position = "auto", scale = 1 }
+end
+
+local function has_external_monitor()
+    for _, monitor in ipairs(hl.get_monitors()) do
+        if monitor.name ~= "eDP-1" then
+            return true
+        end
+    end
+
+    return false
+end
+
+local function enable_laptop_panel()
+    hl.monitor(laptop_panel_config())
+    hl.timer(function()
+        hl.dispatch(hl.dsp.dpms({ action = "enable", monitor = "eDP-1" }))
+        hl.exec_cmd("brightnessctl -r || true")
+    end, { timeout = 200, type = "oneshot" })
+end
+
+local function disable_laptop_panel()
+    if has_external_monitor() then
+        hl.monitor({ output = "eDP-1", disabled = true })
+    end
+end
+
+hl.bind("switch:on:Lid Switch",  disable_laptop_panel, { locked = true })
+hl.bind("switch:off:Lid Switch", enable_laptop_panel,  { locked = true })
+hl.bind(mainMod .. " + SHIFT + R", enable_laptop_panel, { locked = true })
+hl.bind("XF86Display", enable_laptop_panel, { locked = true })
 
 -- Applications
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
