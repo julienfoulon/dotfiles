@@ -4,6 +4,7 @@ if f then f:close() end
 
 return {
     is_work_laptop = (hostname == "magneto"),
+    is_home_laptop = (hostname == "moriarty"),
     work_left  = "desc:Dell Inc. DELL P2217H 0G2TG68C266T",
     work_right = "desc:Dell Inc. DELL UZ2315H 0J4PM66NA36S",
 }

@@ -51,6 +51,9 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("pkill wofi || " .. menu))
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(terminal .. " --class clipse -e clipse"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("set-wallpaper"))
+if vars.is_home_laptop then
+    hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("super_b"))
+end
 
 -- Window management
 hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
