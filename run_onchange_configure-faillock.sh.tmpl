@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+{{- if and (eq .chezmoi.os "linux") (eq .chezmoi.osRelease.id "arch") .chezmoi.config.data.laptop }}
+set -e
+sudo install -d -m 755 /etc/security
+sudo install -m 644 "{{ .chezmoi.sourceDir }}/dot_etc/security/faillock.conf" /etc/security/faillock.conf
+if command -v faillock > /dev/null 2>&1; then
+    sudo faillock --user "{{ .chezmoi.username }}" --reset
+fi
+{{- else }}
+echo "faillock: unsupported host"
+{{- end }}
