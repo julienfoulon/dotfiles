@@ -18,6 +18,27 @@ Hyprland 0.55 replaced hyprlang with Lua. All config is now `.lua`. The `hl` glo
 injected by Hyprland — no imports needed. The stubs at `/usr/share/hypr/stubs/hl.meta.lua`
 are the authoritative typed API reference; read them when unsure about signatures or fields.
 
+## Linting
+
+`lua-language-server` is available via jvim's Mason install — no extra packages needed:
+
+```bash
+~/.local/share/jvim/mason/bin/lua-language-server \
+  --check ~/.config/hypr/ \
+  --configpath ~/.config/hypr/.luarc.json
+```
+
+The `.luarc.json` at `~/.config/hypr/` (tracked in chezmoi as `dot_config/hypr/dot_luarc.json`) wires up the stubs:
+```json
+{
+  "workspace": { "library": ["/usr/share/hypr/stubs"], "checkThirdParty": false },
+  "diagnostics": { "globals": ["hl"] }
+}
+```
+
+**Run this after every edit.** Known false positive: `workspace_rule` stubs type `workspace` as
+`string` — always pass string selectors (`"1"` not `1`) to keep the checker clean.
+
 ## File structure
 
 Entry point: `~/.config/hypr/hyprland.lua`  
