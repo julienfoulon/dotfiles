@@ -36,8 +36,11 @@ The `.luarc.json` at `~/.config/hypr/` (tracked in chezmoi as `dot_config/hypr/d
 }
 ```
 
-**Run this after every edit.** Known false positive: `workspace_rule` stubs type `workspace` as
-`string` — always pass string selectors (`"1"` not `1`) to keep the checker clean.
+**Run this after every edit.** If the checker reports read-only filesystem errors while
+creating Mason `meta/` files, rerun it with normal write access; otherwise Lua built-ins
+such as `require`, `io`, `os`, `ipairs`, and string methods may show as noisy false
+positives. Known stub constraint: `workspace_rule` types `workspace` as `string`, so
+always pass string selectors (`"1"` not `1`) to keep the checker clean.
 
 ## File structure
 
@@ -117,7 +120,7 @@ hl.monitor({
     disabled = false,                 -- true to turn off
     transform = 0,                    -- 0-7 (rotation: 1=90°, 2=180°, 3=270°, 4-7 flipped)
     mirror   = "eDP-1",               -- mirror another output
-    reserved = {top, right, bottom, left},
+    reserved = { top = 0, right = 0, bottom = 0, left = 0 },
 })
 ```
 
@@ -300,7 +303,7 @@ hl.layer_rule({
 ```lua
 -- Workspace rule
 hl.workspace_rule({
-    workspace  = 4,                           -- number or selector string
+    workspace  = "4",                         -- string selector; stubs require string
     monitor    = "desc:Dell Inc. DELL P2217H 0G2TG68C266T",
     default    = true,
     persistent = true,
