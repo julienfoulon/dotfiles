@@ -44,7 +44,14 @@ hl.bind("XF86Display", enable_laptop_panel, { locked = true })
 
 -- Applications
 hl.bind(mainMod .. " + Q", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("close-active"))
+hl.bind(mainMod .. " + C", function()
+    local w = hl.get_active_window()
+    if w and w.class == "clipse" then
+        hl.exec_cmd("kill " .. w.pid)
+    else
+        hl.dispatch(hl.dsp.window.close())
+    end
+end)
 hl.bind(mainMod .. " + M", hl.dsp.exec_cmd("wlogout --column-spacing 12 --row-spacing 12"))
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("loginctl lock-session"))
 hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
@@ -59,7 +66,12 @@ end
 hl.bind(mainMod .. " + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
-hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))
+hl.bind(mainMod .. " + J", function()
+    local ws = hl.get_active_special_workspace() or hl.get_active_workspace()
+    if not ws then return end
+    local msgs = { dwindle = "togglesplit", master = "swapwithmaster", scrolling = "swapcol r" }
+    if msgs[ws.tiled_layout] then hl.dispatch(hl.dsp.layout(msgs[ws.tiled_layout])) end
+end)
 
 -- Focus
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -87,12 +99,12 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Audio / media
-hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("pactl -- set-sink-volume @DEFAULT_SINK@ -10%"))
-hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("pactl -- set-sink-volume @DEFAULT_SINK@ +10%"))
-hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("pactl -- set-sink-mute @DEFAULT_SINK@ toggle"))
-hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("pactl -- set-source-mute 0 toggle"))
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"))
-hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl s +10%"))
+hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("pactl -- set-sink-volume @DEFAULT_SINK@ -10%"),   { locked = true })
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("pactl -- set-sink-volume @DEFAULT_SINK@ +10%"),   { locked = true })
+hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("pactl -- set-sink-mute @DEFAULT_SINK@ toggle"),   { locked = true })
+hl.bind("XF86AudioMicMute",      hl.dsp.exec_cmd("pactl -- set-source-mute @DEFAULT_SOURCE@ toggle"), { locked = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"),                           { locked = true })
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl s +10%"),                           { locked = true })
 hl.bind("XF86AudioNext",  hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioPlay",  hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
