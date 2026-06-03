@@ -1,6 +1,6 @@
 local vars = require("hyprland.vars")
 if vars.is_work_laptop then
-    hl.window_rule({ name = "ws4-outlook", match = { class = "chrome-faolnafnngnfdaknnbpnkhgohbobgegn-Default" }, workspace = "4 silent", splitratio = 1.5 })
+    hl.window_rule({ name = "ws4-outlook", match = { class = "chrome-faolnafnngnfdaknnbpnkhgohbobgegn-Default" }, workspace = "4 silent" })
     hl.window_rule({ name = "ws4-teams",   match = { class = "chrome-cifhbcnohmdccbgoicgdjpfamggdegmo-Default" }, workspace = "4 silent" })
     hl.window_rule({ name = "ws4-keepass", match = { class = "org.keepassxc.KeePassXC" },                         workspace = "4 silent" })
 end
