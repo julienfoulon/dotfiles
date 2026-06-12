@@ -4,6 +4,7 @@ echo "Chezmoi, install {{ .chezmoi.os }} packages ({{- .chezmoi.osRelease.id -}}
 {{- if eq .chezmoi.osRelease.id "arch" }}
 sudo pacman --needed -Suy{{ range .packages.linux.arch.pacman }} {{ . | quote }}{{- end }}
 
+{{- if or .packages.linux.arch.yay (and .chezmoi.config.data.laptop (or .laptoppackages.linux.arch.yay .guipackages.linux.arch.yay)) (and .chezmoi.config.data.home .chezmoi.config.data.laptop .homelaptoppackages.linux.arch.yay) }}
 # install yay if necessary
 if ! command -v yay > /dev/null 2>&1; then
     YAY_DIR="$(mktemp -d)"
@@ -11,6 +12,7 @@ if ! command -v yay > /dev/null 2>&1; then
     (cd "$YAY_DIR" && makepkg -si)
     rm -rf "$YAY_DIR"
 fi
+{{- end }}
 
 {{- if .packages.linux.arch.yay }}
 yay --needed -S {{ range .packages.linux.arch.yay }} {{ . | quote }}{{- end }}
@@ -41,7 +43,6 @@ yay --needed -S {{ range .homelaptoppackages.linux.arch.yay }} {{ . | quote }}{{
 {{ if .chezmoi.config.data.laptop -}}
 {{- if .guipackages.linux.arch.yay }}
 yay --needed -S {{ range .guipackages.linux.arch.yay }} {{ . | quote }}{{- end }}
-{{- end }}
 for svc in cups.service avahi-daemon.service cups-browsed.service; do
     if systemctl is-enabled --quiet "$svc"; then
         echo "$svc: already enabled"
@@ -54,6 +55,7 @@ for svc in cups.service avahi-daemon.service cups-browsed.service; do
         sudo systemctl start "$svc"
     fi
 done
+{{- end }}
 
 {{ if .chezmoi.config.data.laptop -}}
 SDDM_CONFIG_DIR="/etc/sddm.conf.d"
