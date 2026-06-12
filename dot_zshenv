@@ -13,6 +13,10 @@ if [ -d "$HOME/.local/bin" ] && [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
   export PATH="$HOME/.local/bin:$PATH"
 fi
 
+if [ -d "$HOME/.nvm/current/bin" ] && [[ ":$PATH:" != *":$HOME/.nvm/current/bin:"* ]]; then
+  export PATH="$HOME/.nvm/current/bin:$PATH"
+fi
+
 if [ -f "$HOME/.cargo/env" ]; then
   . "$HOME/.cargo/env"
 fi
