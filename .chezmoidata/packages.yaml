@@ -20,6 +20,7 @@ packages:
         - fd                # a better find
         - bat               # better cat
         - jq                # JSON parsing for scripts
+        - rsync             # efficient file sync over ssh
         - git               # plugins and dev
         - jujutsu           # jj VCS
         - base-devel        # for yay install
