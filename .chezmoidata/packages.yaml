@@ -25,6 +25,7 @@ packages:
         - base-devel        # for yay install
         - openssh           # include ssh-agent and ssh-add
         - neovim            # better vi
+        - tree-sitter-cli   # parser installer for nvim-treesitter
         - zellij            # multiplexer
         - age               # encryption
         - ripgrep           # better grep
