@@ -1,5 +1,6 @@
 return {
   "DrKJeff16/project.nvim",
+  cmd = { "Project" },
   config = function()
     local function default_name(path)
       local base = vim.fn.fnamemodify(path, ":t")
