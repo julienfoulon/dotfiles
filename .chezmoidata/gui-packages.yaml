@@ -66,6 +66,7 @@ guipackages:
         - gnome-themes-extra
 
         - keepassxc
+        - ttf-victor-mono-nerd
         
         #- qt5-wayland
         #- qt6-wayland
