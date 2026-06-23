@@ -1,13 +1,20 @@
 if [[ -o login ]]; then
-    # ---- host banner: figlet '3d' "<hostname>[.lab]" in this host's color ----
-    # Color comes from .chezmoidata/banner.yaml (templated at apply time);
-    # figlet is installed via .chezmoidata/packages.yaml. ".lab" is appended on
-    # lab hosts only (non-laptops). Falls back to plain text if figlet is absent.
+    # ---- host banner: figlet "<hostname>[.lab]" in this host's color ----
+    # Color comes from .chezmoidata/banner.yaml (templated at apply time). figlet
+    # is installed via .chezmoidata/packages.yaml; the '3d' font (xero, no redist
+    # license) is fetched to ~/.local/share/figlet by run_onchange_install-figlet-
+    # fonts.sh. ".lab" is appended on lab hosts (non-laptops). Falls back to the
+    # default figlet font, then to plain text, if the font/binary is missing.
     banner_name="{{ .chezmoi.hostname }}{{ if not .laptop }}.lab{{ end }}"
     banner_color="{{ index .bannerColors .chezmoi.hostname | default "white" }}"
+    banner_font="${XDG_DATA_HOME:-$HOME/.local/share}/figlet/3d.flf"
     if (( $+commands[figlet] )); then
         print -Pn "%F{${banner_color}}"
-        figlet -f 3d -- "$banner_name"
+        if [[ -r "$banner_font" ]]; then
+            figlet -f "$banner_font" -- "$banner_name"
+        else
+            figlet -- "$banner_name"
+        fi
         print -Pn "%f"
     else
         print -P "%F{${banner_color}}${banner_name}%f"
