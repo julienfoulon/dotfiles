@@ -30,6 +30,7 @@ packages:
         - zellij            # multiplexer
         - age               # encryption
         - ripgrep           # better grep
+        - figlet            # login banner art
       yay:
         #- fbterm            # Framebuffer terminal
     ubuntu:
@@ -54,6 +55,7 @@ packages:
         - build-essential   # Arch base-devel equivalent
         - openssh-client
         - age
+        - figlet            # login banner art
       cargo:
         - eza
         - zoxide

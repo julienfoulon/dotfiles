@@ -1,4 +1,18 @@
 if [[ -o login ]]; then
+    # ---- host banner: figlet '3d' "<hostname>[.lab]" in this host's color ----
+    # Color comes from .chezmoidata/banner.yaml (templated at apply time);
+    # figlet is installed via .chezmoidata/packages.yaml. ".lab" is appended on
+    # lab hosts only (non-laptops). Falls back to plain text if figlet is absent.
+    banner_name="{{ .chezmoi.hostname }}{{ if not .laptop }}.lab{{ end }}"
+    banner_color="{{ index .bannerColors .chezmoi.hostname | default "white" }}"
+    if (( $+commands[figlet] )); then
+        print -Pn "%F{${banner_color}}"
+        figlet -f 3d -- "$banner_name"
+        print -Pn "%f"
+    else
+        print -P "%F{${banner_color}}${banner_name}%f"
+    fi
+
     os_id="unknown"
     os_version="unknown"
     if [[ -r /etc/os-release ]]; then

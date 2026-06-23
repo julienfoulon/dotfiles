@@ -1,0 +1,11 @@
+# Per-host login banner color (consumed by dot_config/zsh-config.d/login.zsh.tmpl).
+# Values are zsh %F{...} color specs: a named color (red/green/yellow/blue/
+# magenta/cyan/white) or a 256-color number (e.g. 208). Unlisted hosts fall back
+# to "white".
+bannerColors:
+  magneto: blue
+  moriarty: magenta
+  jammy: yellow
+  noble: red
+  zod: green
+  nest: cyan
