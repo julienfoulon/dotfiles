@@ -53,9 +53,12 @@ packages:
         - jq
         - git
         - build-essential   # Arch base-devel equivalent
+        - pkg-config        # cargo build dep (openssl-sys etc.)
+        - libssl-dev        # cargo build dep (openssl-sys etc.)
         - openssh-client
         - age
         - figlet            # login banner art
+        - systemd-container  # systemd-nspawn for nested nspawn dev
       cargo:
         - eza
         - zoxide
