@@ -4,3 +4,11 @@ CLAUDE.md
 README.md
 assets/
 docker/
+
+# The hyprland skill (a Wayland WM helper) is only useful where Hyprland runs.
+# Gate it on the same `laptop` flag that gates GUI packages, so it is not
+# deployed on non-laptop hosts (nspawn containers, servers).
+{{ if not .chezmoi.config.data.laptop }}
+.claude/skills/hyprland
+.local/share/agent-skills/hyprland
+{{ end }}
