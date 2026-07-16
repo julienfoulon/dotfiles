@@ -3,6 +3,8 @@
 {{- $work := false -}}{{/* true if this machine is a work machine */}}
 {{- $home := false -}}{{/* true if this machine is a personnal machine */}}
 {{- $laptop := false -}}{{/* true if this host machine */}}
+{{- $workLaptopHostname := "magneto" -}}{{/* system hostname of the work laptop; single source of truth (LIN-JUFO is an inventory-only name, lives in the ws1-hub unit) */}}
+{{- $homeLaptopHostname := "moriarty" -}}{{/* system hostname of the personal laptop; single source of truth */}}
 
 {{- $osID := .chezmoi.os -}}
 {{- if (and (eq .chezmoi.os "linux") (hasKey .chezmoi.osRelease "id")) -}}
@@ -13,7 +15,7 @@
 # for OS: {{ $osID }}
 # hostname: {{ .chezmoi.hostname }}
 
-{{- if eq .chezmoi.hostname "magneto" -}}
+{{- if eq .chezmoi.hostname $workLaptopHostname -}}
 {{- $work = true -}}
 
 {{- if eq $osID "linux-arch" -}}
@@ -22,7 +24,7 @@
 
 {{- end -}}
 
-{{- if eq .chezmoi.hostname "moriarty" -}}
+{{- if eq .chezmoi.hostname $homeLaptopHostname -}}
 {{- $home = true -}}
 {{- if eq $osID "linux-arch" -}}
 {{- $laptop = true -}}
@@ -45,6 +47,8 @@
   work = {{ $work }}
   home = {{ $home }}
   laptop = {{ $laptop }}
+  work_laptop_hostname = {{ $workLaptopHostname | quote }}
+  home_laptop_hostname = {{ $homeLaptopHostname | quote }}
   osid = {{ $osID | quote }}
   user.name = "Julien Foulon"
   

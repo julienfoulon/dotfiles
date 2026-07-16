@@ -20,7 +20,7 @@ Configured via `.chezmoi.toml.tmpl` using hostname detection:
 - **moriarty**: personal laptop, Arch Linux (`home=true`, `laptop=true`), Waydroid, optional 4K screen with 2x scaling
 - **nspawn/Ubuntu dev envs** (e.g. `jammy`, `noble`): non-laptop Ubuntu hosts, get the base Ubuntu package set only (no GUI, no laptop packages)
 
-Template data variables: `work`, `home`, `laptop`, `osid`.
+Template data variables: `work`, `home`, `laptop`, `osid`, `work_laptop_hostname` (`magneto`), `home_laptop_hostname` (`moriarty`). The two hostname variables are the single source of truth for host detection — reference them (e.g. `{{ .work_laptop_hostname }}`) instead of hardcoding hostnames in templates.
 
 ## Hyprland Notes
 
