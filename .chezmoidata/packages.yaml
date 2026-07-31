@@ -57,6 +57,8 @@ packages:
         - pkg-config        # cargo build dep (openssl-sys etc.)
         - libssl-dev        # cargo build dep (openssl-sys etc.)
         - openssh-client
+        - python3-pip      # Mason pip-based tools (ruff)
+        - python3-venv     # Mason installs pip tools into a venv
         - age
         - figlet            # login banner art
         - systemd-container  # systemd-nspawn for nested nspawn dev
