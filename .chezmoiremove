@@ -1,0 +1,3 @@
+# Files formerly managed by this repo that must be deleted on targets.
+# zsh-config.d is glob-sourced by .zshrc, so a stale file would still load.
+.config/zsh-config.d/nvm.zsh

@@ -31,6 +31,7 @@ packages:
         - age               # encryption
         - ripgrep           # better grep
         - figlet            # login banner art
+        - fnm               # node version manager (replaces zsh-nvm)
       yay:
         #- fbterm            # Framebuffer terminal
     ubuntu:
@@ -66,3 +67,4 @@ packages:
         - ripgrep
         - cargo-update
         - jj-cli            # jj VCS
+        - fnm               # node version manager (replaces zsh-nvm)

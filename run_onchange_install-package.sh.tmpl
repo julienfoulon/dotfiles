@@ -181,6 +181,21 @@ fi
 {{- else }}
 echo "unsupported linux variant"
 {{- end }}
+
+# Node.js LTS via fnm (fnm comes from pacman on Arch, cargo on Ubuntu).
+# node/npm/npx are symlinked into ~/.local/bin so non-interactive contexts
+# (chezmoi run scripts, Mason) find them without fnm's shell integration;
+# interactive shells get version switching from fnm.zsh (--use-on-cd).
+export PATH="{{ .chezmoi.homeDir }}/.cargo/bin:$PATH"
+if command -v fnm > /dev/null 2>&1; then
+    eval "$(fnm env --shell bash)"
+    # first install also becomes the "default" alias
+    fnm ls | grep -q default || fnm install --lts
+    mkdir -p "{{ .chezmoi.homeDir }}/.local/bin"
+    for bin in node npm npx; do
+        ln -sf "$FNM_DIR/aliases/default/bin/$bin" "{{ .chezmoi.homeDir }}/.local/bin/$bin"
+    done
+fi
 {{- else }}
 echo "unsupported OS"
 exit 1
