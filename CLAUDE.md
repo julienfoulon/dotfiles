@@ -10,7 +10,7 @@ Dotfiles managed by [chezmoi](https://www.chezmoi.io/). Files prefixed with `dot
 
 - `chezmoi diff` — preview changes between repo and target files
 - `chezmoi apply` — apply templates to the home directory
-- `./docker/arch/test.sh` — build and run the Arch test container for clean-environment validation
+- `./docker/test.sh [arch|laptop|noble]` — build and run a test container for clean-deploy validation (`arch` = plain Arch, `laptop` = Arch with hostname `magneto` → laptop/GUI packages, `noble` = Ubuntu 24.04 dev-env-like); the container auto-deploys (`chezmoi init && chezmoi apply`, two-step because config data isn't loaded during `init --apply`) and lands in zsh
 
 ## Hosts & Environments
 
