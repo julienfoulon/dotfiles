@@ -1,7 +1,7 @@
 guipackages:
-  linux: 
+  linux:
     arch:
-      yay:
+      pacman:
         - kitty
         - hyprland
         - hypridle
@@ -14,16 +14,14 @@ guipackages:
         - archlinux-xdg-menu
         - awww
         - waybar
-        - nm-applet
+        # provides the nm-applet binary
         - network-manager-applet
-        - wl-copy
+        # provides the wl-copy/wl-paste binaries used by clipse
         - wl-clipboard
-        - clipse-wayland-bin
         - ripgrep
         - wofi
         - libnotify
         - dunst
-        - wlogout
         - brightnessctl
         - power-profiles-daemon
         - firefox
@@ -47,7 +45,7 @@ guipackages:
         # sound gui
         - pavucontrol-qt
         - polkit-kde-agent
-        
+
         # for waydroid
         - dkms
         - python-pyclip
@@ -67,9 +65,12 @@ guipackages:
 
         - keepassxc
         - ttf-victor-mono-nerd
-        
+
         #- qt5-wayland
         #- qt6-wayland
+      yay:
+        - clipse-wayland-bin
+        - wlogout
 
     ubuntu:
       cargo:

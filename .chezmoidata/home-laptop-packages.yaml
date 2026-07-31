@@ -1,6 +1,7 @@
 homelaptoppackages:
   linux:
     arch:
-      yay:
+      pacman:
         - waydroid
+      yay:
         - zoom
