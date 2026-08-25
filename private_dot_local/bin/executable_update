@@ -1,5 +1,41 @@
 #!/usr/bin/env bash
 
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    GREEN='\033[32m'
+    YELLOW='\033[33m'
+    RED='\033[31m'
+    BLUE='\033[34m'
+    RESET='\033[0m'
+else
+    GREEN=''
+    YELLOW=''
+    RED=''
+    BLUE=''
+    RESET=''
+fi
+
+EXIT_STATUS=0
+
+status() {
+    local label="$1"
+    local color="$2"
+    local message="$3"
+    printf '%s: %b%s%b\n' "$label" "$color" "$message" "$RESET"
+}
+
+running() {
+    printf '%b%s%b\n' "$BLUE" "$1..." "$RESET"
+}
+
+failed() {
+    local label="$1"
+    local log="$2"
+
+    status "$label" "$RED" "failed"
+    [ ! -s "$log" ] || cat "$log" >&2
+    EXIT_STATUS=1
+}
+
 confirm() {
     local prompt="$1"
     read -r -p "$prompt [Y/n] " response
@@ -11,6 +47,33 @@ confirm() {
 
 without_pager() {
     GIT_PAGER=cat PAGER=cat LESS=FRX "$@"
+}
+
+snapshot_zinit() {
+    local root="$1"
+    local git_dir
+    local repo
+
+    find "$root" \( -type d -o -type f \) -name .git -print0 2>/dev/null |
+        while IFS= read -r -d '' git_dir; do
+            repo=${git_dir%/.git}
+            printf 'git\t%s\t%s\n' "$repo" "$(git -C "$repo" rev-parse HEAD 2>/dev/null)"
+        done
+
+    if [ -d "$root/snippets" ]; then
+        find "$root/snippets" -type f -print0 2>/dev/null |
+            sort -z |
+            while IFS= read -r -d '' file; do
+                printf 'snippet\t%s\t%s\n' "${file#"$root/"}" "$(sha256sum "$file" | cut -d ' ' -f 1)"
+            done
+    fi
+}
+
+snapshot_tree() {
+    local root="$1"
+
+    [ -d "$root" ] || return 0
+    find "$root" -type f -printf '%P %s %T@\n' 2>/dev/null | sort
 }
 
 prepare_git_repo_for_pull() {
@@ -38,14 +101,55 @@ OS_ID=$(. /etc/os-release 2>/dev/null && echo "$ID" || echo "unknown")
 
 case "$OS_ID" in
     arch)
-        echo "Pending system updates:"
+        CHECK_LOG=$(mktemp)
         if command -v yay > /dev/null 2>&1; then
-            yay -Qu
-            confirm "Update system?" && yay --noconfirm --answerclean None --answerdiff None --answeredit None --answerupgrade All
+            PENDING_UPDATES=$(yay -Qu 2>"$CHECK_LOG")
+            CHECK_STATUS=$?
+            if [ "$CHECK_STATUS" -ne 0 ] && [ -s "$CHECK_LOG" ]; then
+                failed "System update check" "$CHECK_LOG"
+            elif [ -z "$PENDING_UPDATES" ]; then
+                status "System packages" "$GREEN" "up to date"
+            else
+                echo "Pending system updates:"
+                printf '%s\n' "$PENDING_UPDATES"
+                if confirm "Update system?"; then
+                    UPDATE_LOG=$(mktemp)
+                    running "Updating system packages"
+                    if yay --noconfirm --answerclean None --answerdiff None --answeredit None --answerupgrade All >"$UPDATE_LOG" 2>&1; then
+                        status "System packages" "$YELLOW" "updated"
+                    else
+                        failed "System packages" "$UPDATE_LOG"
+                    fi
+                    rm -f "$UPDATE_LOG"
+                else
+                    status "System packages" "$YELLOW" "skipped"
+                fi
+            fi
         else
-            sudo pacman -Qu
-            confirm "Update system?" && sudo pacman -Syu --noconfirm
+            PENDING_UPDATES=$(pacman -Qu 2>"$CHECK_LOG")
+            CHECK_STATUS=$?
+            if [ "$CHECK_STATUS" -ne 0 ] && [ -s "$CHECK_LOG" ]; then
+                failed "System update check" "$CHECK_LOG"
+            elif [ -z "$PENDING_UPDATES" ]; then
+                status "System packages" "$GREEN" "up to date"
+            else
+                echo "Pending system updates:"
+                printf '%s\n' "$PENDING_UPDATES"
+                if confirm "Update system?"; then
+                    UPDATE_LOG=$(mktemp)
+                    running "Updating system packages"
+                    if sudo pacman -Syu --noconfirm >"$UPDATE_LOG" 2>&1; then
+                        status "System packages" "$YELLOW" "updated"
+                    else
+                        failed "System packages" "$UPDATE_LOG"
+                    fi
+                    rm -f "$UPDATE_LOG"
+                else
+                    status "System packages" "$YELLOW" "skipped"
+                fi
+            fi
         fi
+        rm -f "$CHECK_LOG"
         ;;
     ubuntu)
         sudo apt-get update -y
@@ -96,14 +200,82 @@ esac
 
 ZINIT_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/zinit/zinit.git"
 if [ -f "$ZINIT_DIR/zinit.zsh" ]; then
-    if confirm "Update zinit and plugins?"; then
-        prepare_git_repo_for_pull "$ZINIT_DIR" && without_pager zsh -ic "zinit self-update; zinit update --quiet --no-pager --all"
+    ZINIT_ROOT=${ZINIT_DIR%/zinit.git}
+    ZINIT_BEFORE=$(mktemp)
+    ZINIT_AFTER=$(mktemp)
+    ZINIT_LOG=$(mktemp)
+    snapshot_zinit "$ZINIT_ROOT" | sort >"$ZINIT_BEFORE"
+    running "Updating zinit and plugins"
+    if { prepare_git_repo_for_pull "$ZINIT_DIR" && without_pager zsh -ic "zinit self-update; zinit update --quiet --no-pager --all"; } >"$ZINIT_LOG" 2>&1; then
+        snapshot_zinit "$ZINIT_ROOT" | sort >"$ZINIT_AFTER"
+        if cmp -s "$ZINIT_BEFORE" "$ZINIT_AFTER"; then
+            status "Zinit and plugins" "$GREEN" "up to date"
+        else
+            status "Zinit and plugins" "$YELLOW" "updated"
+            comm -3 <(sort "$ZINIT_BEFORE") <(sort "$ZINIT_AFTER") |
+                sed 's/^[[:space:]]*//' |
+                awk -F '\t' '$1 == "git" { name=$2; sub(/^.*\//, "", name); print name } $1 == "snippet" { print $2 }' |
+                sed 's/---/\//' |
+                sort -u |
+                sed 's/^/  /'
+        fi
+        grep -A 1 '^Moved untracked file' "$ZINIT_LOG" || true
+    else
+        failed "Zinit and plugins" "$ZINIT_LOG"
     fi
+    rm -f "$ZINIT_BEFORE" "$ZINIT_AFTER" "$ZINIT_LOG"
 fi
 
 if command -v jvim > /dev/null 2>&1; then
-    if confirm "Update jvim plugins?"; then
-        without_pager env NVIM_APPNAME=jvim jvim --headless "+Lazy! update" +qa
-        without_pager env NVIM_APPNAME=jvim jvim --headless "+MasonToolsUpdateSync" +qa
+    JVIM_DATA="${XDG_DATA_HOME:-$HOME/.local/share}/jvim"
+    LAZY_LOCK="${XDG_CONFIG_HOME:-$HOME/.config}/jvim/lazy-lock.json"
+    LAZY_BEFORE=$(mktemp)
+    LAZY_LOG=$(mktemp)
+    MASON_BEFORE=$(mktemp)
+    MASON_AFTER=$(mktemp)
+    MASON_LOG=$(mktemp)
+    [ ! -f "$LAZY_LOCK" ] || cp "$LAZY_LOCK" "$LAZY_BEFORE"
+    snapshot_tree "$JVIM_DATA/mason/packages" >"$MASON_BEFORE"
+
+    running "Updating jvim plugins"
+    if without_pager env NVIM_APPNAME=jvim jvim --headless "+Lazy! update" +qa >"$LAZY_LOG" 2>&1; then
+        if [ -f "$LAZY_LOCK" ] && ! cmp -s "$LAZY_BEFORE" "$LAZY_LOCK"; then
+            UPDATED_COUNT=''
+            UPDATED_PLUGINS=''
+            if command -v jq > /dev/null 2>&1 && [ -s "$LAZY_BEFORE" ]; then
+                UPDATED_COUNT=$(jq -s '[.[0] as $before | .[1] | to_entries[] | select($before[.key].commit != .value.commit)] | length' "$LAZY_BEFORE" "$LAZY_LOCK" 2>/dev/null)
+                UPDATED_PLUGINS=$(jq -r -s '.[0] as $before | .[1] | to_entries[] | select($before[.key].commit != .value.commit) | "  \(.key): \(($before[.key].commit // "new")[0:7]) -> \(.value.commit[0:7])"' "$LAZY_BEFORE" "$LAZY_LOCK" 2>/dev/null)
+            fi
+            if [ -n "${UPDATED_COUNT:-}" ]; then
+                status "Jvim plugins" "$YELLOW" "updated ($UPDATED_COUNT)"
+            else
+                status "Jvim plugins" "$YELLOW" "updated"
+            fi
+            [ -z "${UPDATED_PLUGINS:-}" ] || printf '%s\n' "$UPDATED_PLUGINS"
+        else
+            status "Jvim plugins" "$GREEN" "up to date"
+        fi
+    else
+        failed "Jvim plugins" "$LAZY_LOG"
     fi
+
+    running "Updating Mason tools"
+    if without_pager env NVIM_APPNAME=jvim jvim --headless "+MasonToolsUpdateSync" +qa >"$MASON_LOG" 2>&1; then
+        snapshot_tree "$JVIM_DATA/mason/packages" >"$MASON_AFTER"
+        if cmp -s "$MASON_BEFORE" "$MASON_AFTER"; then
+            status "Mason tools" "$GREEN" "up to date"
+        else
+            status "Mason tools" "$YELLOW" "updated"
+            comm -3 "$MASON_BEFORE" "$MASON_AFTER" |
+                sed 's/^[[:space:]]*//' |
+                cut -d/ -f 1 |
+                sort -u |
+                sed 's/^/  /'
+        fi
+    else
+        failed "Mason tools" "$MASON_LOG"
+    fi
+    rm -f "$LAZY_BEFORE" "$LAZY_LOG" "$MASON_BEFORE" "$MASON_AFTER" "$MASON_LOG"
 fi
+
+exit "$EXIT_STATUS"
