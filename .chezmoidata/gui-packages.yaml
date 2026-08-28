@@ -69,7 +69,7 @@ guipackages:
         #- qt5-wayland
         #- qt6-wayland
       yay:
-        - clipse-wayland-bin
+        - clipse
         - wlogout
 
     ubuntu:
