@@ -49,6 +49,35 @@ if [[ "$mode" == window ]]; then
     fi
 fi
 
+# Reuse the host compositor's configured XKB values when Hyprland exposes
+# them. XKB_DEFAULT_* also covers other Wayland compositors. If neither is
+# available, use the requested US international fallback.
+keyboard_layout="${XKB_DEFAULT_LAYOUT:-}"
+keyboard_variant="${XKB_DEFAULT_VARIANT:-}"
+keyboard_options="${XKB_DEFAULT_OPTIONS:-}"
+
+if command -v hyprctl >/dev/null 2>&1 && command -v jq >/dev/null 2>&1; then
+    host_layout="$(hyprctl -j getoption input:kb_layout 2>/dev/null | jq -er '.str // empty' 2>/dev/null || true)"
+    if [[ -n "$host_layout" ]]; then
+        keyboard_layout="$host_layout"
+        keyboard_variant="$(hyprctl -j getoption input:kb_variant 2>/dev/null | jq -er '.str // empty' 2>/dev/null || true)"
+        keyboard_options="$(hyprctl -j getoption input:kb_options 2>/dev/null | jq -er '.str // empty' 2>/dev/null || true)"
+    fi
+fi
+
+if [[ -z "$keyboard_layout" ]]; then
+    keyboard_layout="us"
+    keyboard_variant="intl"
+    keyboard_options=""
+fi
+
+test_scale="${HYPRLAND_TEST_SCALE:-1}"
+if ! [[ "$test_scale" =~ ^[0-9]+([.][0-9]+)?$ ]] \
+    || ! awk -v scale="$test_scale" 'BEGIN { exit !(scale > 0) }'; then
+    echo "HYPRLAND_TEST_SCALE must be a positive number" >&2
+    exit 2
+fi
+
 image="jfo/chezmoi-test-hyprland"
 docker build --pull -t "$image" "$script_dir"
 
@@ -59,6 +88,10 @@ docker_args=(
     --device "$render_node:$render_node"
     --group-add "$(stat -c '%g' "$render_node")"
     --mount "type=bind,src=$repo_dir,dst=/src,readonly"
+    --env "HYPRLAND_TEST_KB_LAYOUT=$keyboard_layout"
+    --env "HYPRLAND_TEST_KB_VARIANT=$keyboard_variant"
+    --env "HYPRLAND_TEST_KB_OPTIONS=$keyboard_options"
+    --env "HYPRLAND_TEST_SCALE=$test_scale"
 )
 
 # Clipse only needs uinput for its optional auto-paste feature. Clipboard
