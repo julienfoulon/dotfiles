@@ -13,7 +13,6 @@ guipackages:
         - xdg-desktop-portal-kde
         - archlinux-xdg-menu
         - awww
-        - waybar
         # provides the nm-applet binary
         - network-manager-applet
         # provides the wl-copy/wl-paste binaries used by clipse
@@ -70,6 +69,8 @@ guipackages:
         #- qt6-wayland
       yay:
         - clipse
+        # Git version supports Hyprland's Lua-based IPC dispatchers
+        - waybar-git
         - wlogout
 
     ubuntu:
