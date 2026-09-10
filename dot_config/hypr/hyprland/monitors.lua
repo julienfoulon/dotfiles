@@ -8,5 +8,5 @@ end
 
 hl.monitor({ output = vars.work_left,  mode = "1920x1080@60", position = "1920x0", scale = 1 })
 hl.monitor({ output = vars.work_right, mode = "1920x1080@60", position = "3840x0", scale = 1 })
-hl.monitor({ output = "desc:DENON Ltd. DENON-AVRHD 0x01010101",   mode = "highres",      position = "auto",   scale = 2 })
+hl.monitor({ output = "desc:DENON Ltd. DENON-AVRHD 0x01010101",   mode = "3840x2160@30", position = "auto",   scale = 2 })
 hl.monitor({ output = "",                                          mode = "preferred",    position = "auto",   scale = "auto" })
