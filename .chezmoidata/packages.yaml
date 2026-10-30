@@ -70,3 +70,4 @@ packages:
         - cargo-update
         - jj-cli            # jj VCS
         - fnm               # node version manager (replaces zsh-nvm)
+        - tree-sitter-cli   # parser installer for nvim-treesitter (apt's 0.20 is too old)
