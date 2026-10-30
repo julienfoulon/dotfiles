@@ -10,6 +10,7 @@ return {
     treesitter.setup({
       install_dir = vim.fn.stdpath("data") .. "/site",
     })
+    treesitter.install(languages)
 
     vim.api.nvim_create_autocmd("FileType", {
       pattern = languages,
