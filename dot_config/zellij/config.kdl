@@ -107,6 +107,11 @@ keybinds clear-defaults=true {
         bind "w" { SearchToggleOption "Wrap"; }
     }
     session {
+        // Nested sessions (zellij over ssh): home-row letters instead of
+        // ] / [ which sit on a thumb layer on the Corne
+        bind "k" { FocusHostSession; SwitchToMode "normal"; }
+        bind "j" { FocusGuestSession; SwitchToMode "normal"; }
+        bind "f" { ToggleHostFullscreen; SwitchToMode "normal"; }
         bind "a" {
             LaunchOrFocusPlugin "zellij:about" {
                 floating true
@@ -466,3 +471,28 @@ default_mode "normal"
 // Default: true
 // 
 // show_release_notes false
+
+// Built-in terminal (`zellij terminal`, 0.46+): same fonts as kitty
+// (dot_config/kitty/kitty.conf: FiraCode Light + VictorMono italics, 11pt)
+terminal {
+    font "FiraCode Nerd Font Mono"
+    // kitty uses Light but thickens glyphs when rendering; zellij doesn't, so
+    // Regular looks closer (bold = +300 → a real Bold 700)
+    font_weight "regular"
+    font_bold "FiraCode Nerd Font Mono"
+    font_italic "VictorMono Nerd Font Mono"
+    font_bold_italic "VictorMono Nerd Font Mono"
+    font_size 11
+    ligatures true
+
+    // kitty: background_opacity 0.8 (background only, text stays solid)
+    opacity 0.8
+    opacity_mode "background"
+    // Explicit colors: the zellij theme's "bg" is Surface2 (UI color), not
+    // kitty's base background, so don't inherit it
+    theme {
+        foreground "#CDD6F4"
+        background "#1E1E2E"
+        cursor "#f38ba8"
+    }
+}

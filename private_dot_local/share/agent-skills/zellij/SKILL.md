@@ -126,6 +126,20 @@ zellij prompt choose < branches.txt            # also: input, number, toggle, se
 zellij prompt notify "Build finished" --timeout 5s   # non-blocking, exits 0 at once
 ```
 
+## Nested sessions (zellij over ssh)
+
+A zellij started inside a pane (eg. `ssh -t host zellij attach x`) announces
+itself to the outer one (0.45+, works over ssh, 0.46 host ↔ 0.45.1 guest OK).
+Outer `list-panes -j` shows it as `nested_session_name`; logs show
+`nested session handshake` on both sides. `nested_session_handling`
+(`ask`|`fullscreen`|`descend`|`never`) decides what focusing the pane does.
+
+While descended, **all keys go to the guest**: `FocusHostSession` (ascend) must
+be bound in the **guest's** config. Configs frozen with `clear-defaults=true`
+lack the default `Ctrl o` + `]` / `[` / `f`; on magneto and noble they are
+bound to `Ctrl o` + `k` (ascend) / `j` (descend) / `f` (host fullscreen).
+Clicking the session breadcrumb in the tab bar also ascends.
+
 ## Cleanup
 
 `close-pane -p <id>` for panes you created. Gentler: `send-keys -p <id> "Ctrl c"`
@@ -147,7 +161,8 @@ then `write-chars -p <id> exit` + `write -p <id> 13`. Tabs: `close-tab-by-id <TA
 - **noble** (0.45.1): dev session `vb-dev`, layout `~/.config/zellij/layouts/vb-dev.kdl` —
   tabs `claude` (dispatcher session), `core`, `api`, `proxy` (repos under
   `~/gerrit/`), `run` (lazydocker + shell); tab bar is the `zellaude.wasm` plugin. Launched via
-  `ssh -t noble vb-dev` from magneto; if `zellij list-sessions` doesn't show it,
+  `vb-dev` on magneto (`~/.local/bin/vb-dev` = `ssh -t noble.lab ~/tool/vb-dev`; bare
+  `ssh noble vb-dev` fails, `~/tool` isn't in the ssh PATH); if `zellij list-sessions` doesn't show it,
   it isn't running — don't recreate it yourself, its launcher (`~/tool/vb-dev`)
   does more than attach.
 - **zod**: `zellij web` behind nginx at `https://zod.lab/daily` (session `daily`), see CLAUDE.md.
