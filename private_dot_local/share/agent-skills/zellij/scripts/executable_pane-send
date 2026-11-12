@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# pane-send — write text into a zellij pane BY ID, focus-free.
+#
+# The transport primitive for driving another pane (a REPL, a TUI, another
+# `claude`) without stealing the user's focus. Wraps:
+#     zellij action write-chars -p <id> -- <text>
+#     zellij action write       -p <id> 13      # only with --enter (13 = CR)
+#
+# Verified on zellij 0.44.3 and 0.46.0: -p/--pane-id targets a pane regardless of focus,
+# so there is no go-to-tab + focus race. write 13 submits (a literal "\n" only
+# inserts a line break in the claude TUI — never use write-chars for Enter).
+#
+# Usage:
+#   pane-send [options] <pane_id> [text...]
+#   printf '%s' "$briefing" | pane-send --enter <pane_id>
+#   pane-send --scroll-down <pane_id>          # jump the pane to newest output
+#
+# <pane_id>  terminal_N | plugin_N | N   (as zellij -p accepts)
+# text       taken from the args (joined with spaces); if none, read from stdin
+#            (only when stdin is a pipe — a key-only invocation never blocks).
+#            Prefer stdin/heredoc for anything with quotes, $, !, newlines —
+#            it is passed to zellij verbatim, never re-parsed by a shell.
+#
+# Options:
+#   -e, --enter        press Enter after the text (submit)
+#   -c, --clear        clear the pane's input line first (send-keys Ctrl+u)
+#   -D, --scroll-down  jump the pane to its newest output — sends Ctrl+End, which
+#                      the Claude TUI maps to scroll-to-bottom. Focus-free; use
+#                      alone or after text/--enter. A no-op in apps that ignore it.
+#       --session S    target session S (default: current, ZELLIJ_SESSION_NAME)
+#   -h, --help
+#
+# Safety: refuses to write to your OWN pane (terminal_$ZELLIJ_PANE_ID) — those
+# chars would land in your own prompt.
+set -euo pipefail
+
+enter=0 clear=0 scroll_down=0 session="" id=""
+args=()
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -e|--enter)        enter=1 ;;
+    -c|--clear)        clear=1 ;;
+    -D|--scroll-down)  scroll_down=1 ;;
+    --session)         session="${2:-}"; shift ;;
+    -h|--help)         sed -n '2,35p' "$0"; exit 0 ;;
+    --)                shift; args+=("$@"); break ;;
+    -*)                echo "pane-send: unknown option $1" >&2; exit 2 ;;
+    *)                 if [ -z "$id" ]; then id="$1"; else args+=("$1"); fi ;;
+  esac
+  shift
+done
+
+[ -n "$id" ] || { echo "pane-send: missing <pane_id>" >&2; exit 2; }
+
+# Normalise: a bare number means a terminal pane.
+case "$id" in
+  terminal_*|plugin_*) pane="$id" ;;
+  *[!0-9]*)            echo "pane-send: bad pane id '$id'" >&2; exit 2 ;;
+  *)                   pane="terminal_$id" ;;
+esac
+
+# Own-pane guard.
+if [ -n "${ZELLIJ_PANE_ID:-}" ] && [ "$pane" = "terminal_${ZELLIJ_PANE_ID}" ]; then
+  echo "pane-send: refusing to write to my own pane ($pane)" >&2
+  exit 3
+fi
+
+za=(zellij)
+[ -n "$session" ] && za+=(-s "$session")
+za+=(action)
+
+# Text: args win, else stdin — but only when stdin is a pipe, so a key-only
+# invocation (--clear / --enter / --scroll-down) never blocks on the terminal.
+if [ ${#args[@]} -gt 0 ]; then
+  text="${args[*]}"
+elif [ ! -t 0 ]; then
+  text="$(cat)"
+else
+  text=""
+fi
+
+[ "$clear" = 1 ] && "${za[@]}" send-keys -p "$pane" "Ctrl u"
+[ -n "$text" ] && "${za[@]}" write-chars -p "$pane" -- "$text"
+[ "$enter" = 1 ] && "${za[@]}" write -p "$pane" 13
+# Ctrl+End = CSI 1;5F → bytes 27 91 49 59 53 70. Sent via `write` (raw bytes),
+# like Enter (13), so it is delivered as a key event, not literal input text.
+[ "$scroll_down" = 1 ] && "${za[@]}" write -p "$pane" 27 91 49 59 53 70
+exit 0
