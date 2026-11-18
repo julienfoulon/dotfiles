@@ -279,7 +279,15 @@ plugins {
 // eg. "https://example.com/my-plugin.wasm"
 load_plugins {
 }
- 
+
+// Export COLORTERM into every pane. term.zsh already sets it in each zsh, but
+// a pane started directly as a command (a layout `command`, `zellij run`, eg.
+// the claude tab of vb-dev.kdl) never goes through zsh and would otherwise
+// lack it, falling back to 256 colours (Claude Code's /color session tint).
+env {
+    COLORTERM "truecolor"
+}
+
 // Use a simplified UI without special fonts (arrow glyphs)
 // Options:
 //   - true
