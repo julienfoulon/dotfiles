@@ -12,9 +12,9 @@
 | Keybinding presets | `~/.config/zellij/keybinds/*.kdl` (`keybinds_dir`) — new in 0.46 |
 | Session cache / resurrection | `~/.cache/zellij` |
 
-On magneto `config.kdl` and `catppuccin.kdl` are **managed by chezmoi**
-(`~/.local/share/chezmoi/dot_config/zellij/`): edit the source, then `chezmoi apply`.
-On noble, write directly on the host.
+On magneto and noble `config.kdl` and `catppuccin.kdl` are **managed by chezmoi**
+(`~/.local/share/chezmoi/dot_config/zellij/`): edit the source, then `chezmoi apply`
+— a direct edit of the target is overwritten on the next apply.
 
 **Reference dumps** — the authority for option names and defaults on the
 installed version; prefer them over memory:
@@ -90,6 +90,7 @@ show_startup_tips false
 show_release_notes false
 bars_hidden_on_start "none"         // "all" or "tab-bar,status-bar" (0.46, toggle: Ctrl p Shift z)
 scroll_mode_sync false              // 0.45.1: mouse scroll no longer enters Scroll mode
+support_kitty_graphics_protocol true // kitty image protocol passed through to the host terminal; false to disable
 ```
 
 **Plugin aliases** (`plugins {}`): 0.46 serves the bars from `zellij:bars` with a

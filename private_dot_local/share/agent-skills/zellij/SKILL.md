@@ -10,8 +10,8 @@ creation takes `--no-focus`, so you never need to touch the user's focus.
 Configuration is covered in [config.md](config.md) — read it before editing
 `config.kdl`, a layout, or keybindings.
 
-**Versions:** magneto runs 0.46, noble 0.45.1 (check `zellij --version`).
-Items marked *(0.46)* fail on 0.45 with "unrecognized subcommand".
+**Versions:** magneto and noble both run 0.46 (check `zellij --version`).
+Items marked *(0.46)* fail on older versions with "unrecognized subcommand".
 
 ## Orient first
 
@@ -129,7 +129,7 @@ zellij prompt notify "Build finished" --timeout 5s   # non-blocking, exits 0 at 
 ## Nested sessions (zellij over ssh)
 
 A zellij started inside a pane (eg. `ssh -t host zellij attach x`) announces
-itself to the outer one (0.45+, works over ssh, 0.46 host ↔ 0.45.1 guest OK).
+itself to the outer one (0.45+, works over ssh, eg. magneto ↔ noble).
 Outer `list-panes -j` shows it as `nested_session_name`; logs show
 `nested session handshake` on both sides. `nested_session_handling`
 (`ask`|`fullscreen`|`descend`|`never`) decides what focusing the pane does.
@@ -158,7 +158,7 @@ then `write-chars -p <id> exit` + `write -p <id> 13`. Tabs: `close-tab-by-id <TA
 
 ## Known environments
 
-- **noble** (0.45.1): dev session `vb-dev`, layout `~/.config/zellij/layouts/vb-dev.kdl` —
+- **noble** (0.46): dev session `vb-dev`, layout `~/.config/zellij/layouts/vb-dev.kdl` —
   tabs `claude` (dispatcher session), `core`, `api`, `proxy` (repos under
   `~/gerrit/`), `run` (lazydocker + shell); tab bar is the `zellaude.wasm` plugin. Launched via
   `vb-dev` on magneto (`~/.local/bin/vb-dev` = `ssh -t noble.lab ~/tool/vb-dev`; bare
