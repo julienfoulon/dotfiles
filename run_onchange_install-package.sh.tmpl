@@ -103,8 +103,14 @@ sudo add-apt-repository -y universe
 sudo apt-get update -y
 sudo apt-get install -y{{ range .packages.linux.ubuntu.apt }} {{ . | quote }}{{- end }}
 {{- if .packages.linux.ubuntu.cargo }}
-# Remove any apt-provided duplicates of cargo-managed packages (ignore missing).
-sudo apt-get remove -y --ignore-missing{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
+# Remove apt-provided duplicates of cargo-managed packages. Only pass the ones
+# actually installed: apt-get remove aborts on any name apt doesn't know
+# (cargo-update, jj-cli, fnm...), which used to leave every duplicate in place.
+APT_DUPLICATES=$(dpkg-query -W -f='${db:Status-Abbrev} ${Package}\n'{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }} 2>/dev/null | awk '$1 == "ii" { print $2 }')
+if [ -n "$APT_DUPLICATES" ]; then
+    # shellcheck disable=SC2086 # word-split into package names on purpose
+    sudo apt-get remove -y $APT_DUPLICATES
+fi
 {{- end }}
 
 ensure_cargo() {
