@@ -113,6 +113,18 @@ if [ -n "$APT_DUPLICATES" ]; then
 fi
 {{- end }}
 
+# Run a command at the lowest CPU/IO priority: it still gets all the idle CPU,
+# but any other process goes first. Falls back to nice alone without a systemd
+# user manager (container, no user session, other OS).
+lowprio() {
+    if command -v systemd-run > /dev/null 2>&1 &&
+        systemd-run --user --scope -q -p CPUWeight=1 -p IOWeight=1 true > /dev/null 2>&1; then
+        systemd-run --user --scope -q -p CPUWeight=1 -p IOWeight=1 nice -n 19 "$@"
+    else
+        nice -n 19 "$@"
+    fi
+}
+
 ensure_cargo() {
     if ! command -v cargo > /dev/null 2>&1; then
         sudo apt-get install -y curl
@@ -154,7 +166,7 @@ sudo apt-get install -y{{ range .guipackages.linux.ubuntu.apt }} {{ . | quote }}
 
 {{- if .packages.linux.ubuntu.cargo }}
 ensure_cargo
-cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
+lowprio cargo install --locked{{ range .packages.linux.ubuntu.cargo }} {{ . | quote }}{{- end }}
 {{- end }}
 
 FZF_DIR="{{- .chezmoi.homeDir -}}/.local/share/fzf"
