@@ -165,4 +165,3 @@ then `write-chars -p <id> exit` + `write -p <id> 13`. Tabs: `close-tab-by-id <TA
   `ssh noble vb-dev` fails, `~/tool` isn't in the ssh PATH); if `zellij list-sessions` doesn't show it,
   it isn't running — don't recreate it yourself, its launcher (`~/tool/vb-dev`)
   does more than attach.
-- **zod**: `zellij web` behind nginx at `https://zod.lab/daily` (session `daily`), see CLAUDE.md.
